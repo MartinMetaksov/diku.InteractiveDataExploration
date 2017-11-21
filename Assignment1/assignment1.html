@@ -2,9 +2,62 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Assignment 1</title>
+    <title>Assignment 1 - Interactive Data Exploration</title>
+    <style>
+        /*
+        Some color (randomly chosen)
+        */
+        .dark-red {
+            color: #ff6119;
+        }
+        /*
+        Same as the one used in index.html, but this is how it is required by the assignment
+        */
+        .centered {
+            text-align: center;
+            align-content: center;
+        }
+        /*
+        Enforces image to have a fixed width
+         */
+        .small-image {
+            width: 250px; /* height is auto by default */
+        }
+
+        /*
+        Fixes centering ul within a div
+         */
+        ul {
+            display: inline-block;
+            text-align: left;
+        }
+    </style>
+    <script>
+
+        function renderSecondImage() {
+            var container = document.getElementById('image-container');
+            var img = document.createElement('img');
+            img.setAttribute('src', 'img/2.gif');
+            img.setAttribute('class', 'small-image');
+            container.appendChild(img);
+        }
+
+        window.onload = function () {
+            renderSecondImage();
+        }
+
+    </script>
 </head>
 <body>
-    This is assignment 1
+    <h1 class="centered dark-red">A coloured header</h1>
+    <div class="centered" id="image-container">
+        <img class="small-image" src="img/1.jpg">
+    </div>
+    <div class="centered">
+        <ul>
+            <li><a href="#">Interactive visualization 1: </a></li> <!-- TODO: add a link -->
+            <li><a href="#">Interactive visualization 2: </a></li> <!-- TODO: add a link -->
+        </ul>
+    </div>
 </body>
 </html>
