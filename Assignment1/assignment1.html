@@ -24,6 +24,9 @@
             width: 250px; /* height is auto by default */
         }
 
+        .large-image {
+            width: 750px;
+        }
         /*
         Fixes centering ul within a div
          */
@@ -55,9 +58,28 @@
     </div>
     <div class="centered">
         <ul>
-            <li><a href="#">Interactive visualization 1: </a></li> <!-- TODO: add a link -->
-            <li><a href="#">Interactive visualization 2: </a></li> <!-- TODO: add a link -->
+            <li>Interactive visualization 1: <a href="https://research.google.com/bigpicture/music/">Music Timeline</a></li>
+            <li>Interactive visualization 2: <a href="http://www.washingtonpost.com/wp-srv/special/sports/wizards-shooting-stars/">The Wizards’ shooting stars </a></li>
         </ul>
     </div>
+    <h2 class="centered">Alex Lonchambon</h2>
+    <p>Past and live visualization (with maybe a a slight delay) of meteorological data such as wind, clouds, temperature, wave size, precipitation could be an interesting topic among many others.</p>
+    <p>The use that could be made of it could be:</p>
+    <ul>
+        <li>Recreational, that is to say, useful for all lambdas individuals who would like to obtain meteorological information.</li>
+        <li>Professional, because this tool could for example highlight the importance of wind energy in certain windy areas or assist teams or professional missions which depend on the weather.</li>
+    </ul>
+    <p>The data set could be represented in two ways:</p>
+    <ul>
+        <li>On a map, which uses areas of color, flow, relief, to represent for example the direction of the wind and its intensity or even different areas of temperature or precipitation. Key pointers could also be added to the map, such as the names of major cities, or recognized surf / kitesurfing / windsurfing spots. This visualization of the data could be suitable for a live visualization of meteorological data. It could also look like at the one made by the <a href="https://www.windy.com/?55.264,9.079,5">Windy</a> website:</li>
+        <div class="centered" id="image-container">
+            <img class="large-image" src="http://www.addictootech.com/wp-content/uploads/2016/10/Tracking-Hurricane-matthew-with-weather-tracking-app-windyty.jpg">
+        </div>
+        <li>On charts like point clouds, histogram and so on ... That could particularly be suitable for the study of some meteorological factors in recent years until today. For example here is a possible representation, for the city of Toulouse in France:</li>
+        <div class="centered" id="image-container">
+            <img class="large-image" src="http://www.donneesbrutes.com/wp-content/uploads/2017/03/screencast-2017-06-18-15-22-48.gif">
+        </div>
+    </ul>
+    <p>All the useful data for this visualization could be found on the websites of the official meteorological and climatological services of the country or countries concerned. Or by using some APIs like the one provided by <a href="http://api.windyty.com/">Windy</a>.</p>
 </body>
 </html>
