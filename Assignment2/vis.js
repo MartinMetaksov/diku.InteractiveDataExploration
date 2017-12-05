@@ -1,4 +1,3 @@
-
 d3.select(window).on('load', init);
 
 function init() {
@@ -11,21 +10,22 @@ function init() {
             plotMinMax(data);
 
             plotSeasons(data);
-        })
-        .row(d => {
-            let year = [+d.JAN, +d.FEB, +d.MAR, +d.APR, +d.MAY, +d.JUN,
-                        +d.JUL, +d.AUG, +d.SEP, +d.OCT, +d.NOV, +d.DEC];
-            d.max = Math.max(...year);
-            d.min = Math.min(...year);
-            d.avg = year.reduce( ( p, c ) => p + c, 0 ) / year.length;
-            return d;
         });
 }
 
 function plotMinMax(data) {
 
+    data.forEach(d => {
+        let year = [+d.JAN, +d.FEB, +d.MAR, +d.APR, +d.MAY, +d.JUN,
+            +d.JUL, +d.AUG, +d.SEP, +d.OCT, +d.NOV, +d.DEC];
+        d.max = Math.max(...year);
+        d.min = Math.min(...year);
+        d.avg = year.reduce((p, c) => p + c, 0) / year.length;
+        d.YEAR = +d.YEAR;
+    });
+
     let svg = d3.select('#plot-zurich'),
-        margin = {top: 20, right: 20, bottom: 30, left: 40},
+        margin = {top: 20, right: 10, bottom: 30, left: 40},
         width = +svg.attr('width') - margin.left - margin.right,
         height = +svg.attr('height') - margin.top - margin.bottom;
 
@@ -42,7 +42,7 @@ function plotMinMax(data) {
         .attr('class', 'axis axis--x')
         .attr('transform', 'translate(0,' + height + ')')
         .call(d3.axisBottom(x)
-            .tickValues(d3.range(data[0].YEAR, data[data.length - 1].YEAR, 10)));
+            .tickValues(d3.range(data[0].YEAR, data[data.length - 1].YEAR, 5)));
 
     g.append('g')
         .attr('class', 'axis axis--y')
@@ -74,6 +74,55 @@ function plotMinMax(data) {
         .attr('r', radius)
         .attr('cx', d => x(d.YEAR) + radius)
         .attr('cy', d => y(d.avg));
+
+    // Trendline: http://bl.ocks.org/benvandyke/8459843
+
+    // get the x and y values for least squares
+    let xSeries = d3.range(1, data.length + 1);
+    let ySeries = data.map(d => d.avg);
+
+    let leastSquaresCoeff = leastSquares(xSeries, ySeries);
+
+    // apply the reults of the least squares regression
+    let x1 = data[0].YEAR;
+    let y1 = leastSquaresCoeff[0] + leastSquaresCoeff[1];
+    let x2 = data[data.length - 1].YEAR;
+    let y2 = leastSquaresCoeff[0] * xSeries.length + leastSquaresCoeff[1];
+    let trendData = [[x1, y1, x2, y2]];
+    let decimalFormat = d3.format('0.2f');
+
+    g.selectAll('.trendline')
+        .data(trendData)
+        .enter()
+        .append('line')
+        .attr('class', 'trendline')
+        .attr('x1', d => x(d[0]))
+        .attr('y1', d => y(d[1]))
+        .attr('x2', d => x(d[2]) + x.bandwidth())
+        .attr('y2', d => y(d[3]))
+        .attr('stroke', 'black')
+        .attr('stroke-width', 2);
+
+    svg.append('text')
+        .text('Trendline:')
+        .attr('class', 'text-label')
+        .attr('x', _ => x(x2) - 60)
+        .attr('y', _ => height - 40);
+
+    // display equation on the chart
+    svg.append('text')
+        .text('eq: ' + decimalFormat(leastSquaresCoeff[0]) + 'x + ' +
+            decimalFormat(leastSquaresCoeff[1]))
+        .attr('class', 'text-label')
+        .attr('x', _ => x(x2) - 60)
+        .attr('y', _ => height - 25);
+
+    // display r-square on the chart
+    svg.append('text')
+        .text('r-sq: ' + decimalFormat(leastSquaresCoeff[2]))
+        .attr('class', 'text-label')
+        .attr('x', _ => x(x2) - 60)
+        .attr('y', _ => height - 10);
 }
 
 
@@ -219,4 +268,36 @@ function plotSeasons(data) {
             else
                 return 'September - October - November'
         });
+}
+
+// returns slope, intercept and r-square of the line
+// http://bl.ocks.org/benvandyke/8459843
+function leastSquares(xSeries, ySeries) {
+    let reduceSumFunc = function (prev, cur) {
+        return prev + cur;
+    };
+
+    let xBar = xSeries.reduce(reduceSumFunc) * 1.0 / xSeries.length;
+    let yBar = ySeries.reduce(reduceSumFunc) * 1.0 / ySeries.length;
+
+    let ssXX = xSeries.map(function (d) {
+        return Math.pow(d - xBar, 2);
+    })
+        .reduce(reduceSumFunc);
+
+    let ssYY = ySeries.map(function (d) {
+        return Math.pow(d - yBar, 2);
+    })
+        .reduce(reduceSumFunc);
+
+    let ssXY = xSeries.map(function (d, i) {
+        return (d - xBar) * (ySeries[i] - yBar);
+    })
+        .reduce(reduceSumFunc);
+
+    let slope = ssXY / ssXX;
+    let intercept = yBar - (xBar * slope);
+    let rSquare = Math.pow(ssXY, 2) / (ssXX * ssYY);
+
+    return [slope, intercept, rSquare];
 }
