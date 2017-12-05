@@ -64,7 +64,15 @@
         <svg id="plot-months-st_petersburg" class="" width="380" height="380"></svg>
         <svg id="plot-months-copenhagen" class="" width="380" height="380"></svg>
     </div>
-
+    <p>
+        The bonus pie charts above show the monthly temperatures over all years with provided data for the corresponding cities (Copenhagen, St. Petersburg and Zurich). The color corresponds to the mean temperatures
+        in the respective month (using a color scheme similar to coolwarm). Hovering on a month toggles more information including the min and max temperatures for that month throughout all years, as well as the mean value.
+        Most importantly, the hover box shows a trend, which is the difference between the temperature between the first and the last years available in the data set. Positive values indicate an increase in temperatures, while negative
+        values - a decrease. It can be seen from the charts that an increase predominates for most of the months in all 3 cities, indicating once again that the global warming is a fact.
+    </p>
+    <p>
+        We have been inspired by <a href="http://bl.ocks.org/nbremer/b603c3e0f7a74794da87">http://bl.ocks.org/nbremer/b603c3e0f7a74794da87</a> for making the pie charts and used it as a base.
+    </p>
     <h2 class="centered">Individual part</h2>
     <h2 class="centered">Question 3.1 (Marek Hlava)</h2>
     <p> So far we have shown that weather changed in a few places but we want to see if it's a large scale phenomenon.
@@ -97,6 +105,30 @@
     <p>These elements could be added as streams or color boxes to the geographical area or could also be represented as
         statistical data in a side window.</p>
     <p>This type of visualization could also make it possible to compare two years in particular.</p>
+    <h2 class="centered">Question 3.3 (Martin Metaksov)</h2>
+    <!--
+        How big data sets are reasonable to load in d3 visualizations? What types of visualizations does a limit like that exclude?
+        Give examples of visualizations that must be based on large data sets and discuss how they deal with this.
+        Could you have reduced the size of the data sets in this assignment?
+        -->
+    <p>
+        D3 is meant for visualizing complex data sets, with high dimensionality, allowing for visualizing multiple levels of details and
+        interactively displaying information which is otherwise difficult to read. However, we do not believe this is the case with sets large
+        in size, as there will always be a certain bottleneck reached when loading (e.g. due to cluttering the DOM, or other browser limitations).
+        The larger the sets and the more the computational logic, the more the CPU will be loaded, thus the slower the interaction. At a certain
+        point this can lead to unbearable delays (e.g. possibly files larger than 100MB will present an issue).
+    </p>
+    <p>
+        It is often the case that large data sets can undergo certain pre-processing, encoding, <a href="http://www.forceflow.be/2013/10/07/morton-encodingdecoding-through-bit-interleaving-implementations/">morton encoding</a> and more.
+        This could reduce the sizes and allow for less CPU operations later, which could significantly speedup the processing of large data sets.
+        One example can be seen in <a href="www.idav.ucdavis.edu/func/return_pdf?pub_id=162">www.idav.ucdavis.edu/func/return_pdf?pub_id=162</a>.
+        Furthermore, it is often possible to load only portions of the data at a time and visualize them only. As seen in <a href="http://polymaps.org/ex/flickr.html">http://polymaps.org/ex/flickr.html</a> this provides
+        a significant downside, as the data takes some time to load on each interaction, however can be displayed in a reasonable amount of time.
+    </p>
+    <p>
+        For this particular project, the sizes of the data sets has not been a problem as they were not larger than a few kilobytes.
+        With this said, there was no reason to reduce their sizes.
+    </p>
 </body>
 
 </html>

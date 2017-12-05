@@ -317,11 +317,12 @@ function plotMonths(data, station) {
 
     // prepare the data
     let filteredData = data.columns.slice(1, 13).map(function (r) {
-        let monthly_data = data.map(d => d[r]);
+        let monthly_data = data.map(d => d[r]).map(v => parseFloat(v));
+        let trend = monthly_data[monthly_data.length-1] - monthly_data[0];
         let min = d3.min(monthly_data);
         let max = d3.max(monthly_data);
         let mean = d3.mean(monthly_data);
-        return {"name": r,"min": min, "max": max, "mean": mean};
+        return {"name": r,"min": min, "max": max, "mean": mean, "trend": trend};
     });
 
     //Create a color scale
@@ -386,6 +387,8 @@ function plotMonths(data, station) {
         })
         .append("svg:title")
         .html(d =>
+            "<span>Trend: " + temperatureFormat(d.data.trend) + "&deg;</span>" +
+            "<br>" +
             "<span>Min: " + d.data.min + "&deg;</span>" +
             "<br>" +
             "<span>Max: " + d.data.max + "&deg;</span>" +
