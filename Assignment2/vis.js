@@ -1,5 +1,7 @@
 d3.select(window).on('load', init);
 
+let temperatureFormat = d3.format('0.1f');
+
 function init() {
 
     plotGraphs('zurich');
@@ -70,7 +72,17 @@ function plotMinMax(data, station) {
         .attr('width', x.bandwidth())
         .attr('height', d => y(d.min) - y(d.max))
         .attr('x', d => x(d.YEAR))
-        .attr('y', d => y(d.max));
+        .attr('y', d => y(d.max))
+        .append('svg:title')
+        .html(d =>
+            '<span>Year: ' + d.YEAR + '</span>' +
+            '<br />' +
+            '<span>Min: ' + d.min + ' ºC</span>' +
+            '<br />' +
+            '<span>Max: ' + d.max + ' ºC</span>' +
+            '<br />' +
+            '<span>Avg: ' + temperatureFormat(d.avg) + ' ºC</span>'
+        );
 
 
     let radius = x.bandwidth() / 2;
