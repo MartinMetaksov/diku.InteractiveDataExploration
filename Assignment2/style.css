@@ -63,3 +63,12 @@ body {
     font-size: 10px;
     font-family: sans-serif;
 }
+
+.donutArcs:hover {
+    opacity: 0.5;
+}
+
+.donutTitles {
+    width: 400px;
+    display: inline-block;
+}
