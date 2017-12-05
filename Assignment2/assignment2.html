@@ -64,6 +64,23 @@
         .axis--x path {
             display: none;
         }
+
+        svg {
+            margin: 0 auto;
+            display: block;
+        }
+
+        .line {
+            fill: none;
+            stroke: steelblue;
+            stroke-width: 2px;
+        }
+
+        .legend {
+            padding: 5px;
+            font: 10px sans-serif;
+        }
+
     </style>
     <script src="https://d3js.org/d3.v4.min.js"></script>
     <script src="vis.js"></script>
@@ -74,6 +91,8 @@
 
     <h2>Zurich</h2>
     <svg id="plot-zurich" width="960" height="500"></svg>
+
+    <svg id="plot2-zurich" width="960" height="600"></svg>
 
 </body>
 
