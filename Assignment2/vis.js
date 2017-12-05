@@ -2,18 +2,27 @@ d3.select(window).on('load', init);
 
 function init() {
 
+    plotGraphs('zurich');
+    plotGraphs('st_petersburg');
+}
+
+function plotGraphs(station) {
+
     d3.csv(
-        'data/zurich.csv',
+        'data/' + station + '.csv',
         (error, data) => {
             if (error) throw error;
 
-            plotMinMax(data);
+            plotMinMax(data, station);
 
-            plotSeasons(data);
+            plotSeasons(data, station);
         });
 }
 
-function plotMinMax(data) {
+function plotMinMax(data, station) {
+
+    let svg = d3.select('#plot-minmax-' + station);
+    if (svg.empty()) return;
 
     data.forEach(d => {
         let year = [+d.JAN, +d.FEB, +d.MAR, +d.APR, +d.MAY, +d.JUN,
@@ -24,8 +33,7 @@ function plotMinMax(data) {
         d.YEAR = +d.YEAR;
     });
 
-    let svg = d3.select('#plot-zurich'),
-        margin = {top: 20, right: 10, bottom: 30, left: 40},
+    let margin = {top: 20, right: 10, bottom: 30, left: 40},
         width = +svg.attr('width') - margin.left - margin.right,
         height = +svg.attr('height') - margin.top - margin.bottom;
 
@@ -126,10 +134,13 @@ function plotMinMax(data) {
 }
 
 
-function plotSeasons(data) {
+function plotSeasons(data, station) {
 
-    let svg = d3.select('#plot2-zurich'),
-        margin = {top: 20, right: 20, bottom: 30, left: 40},
+    let svg = d3.select('#plot-seasons-' + station);
+
+    if (svg.empty()) return;
+
+    let margin = {top: 20, right: 20, bottom: 30, left: 40},
         width = +svg.attr('width') - margin.left - margin.right,
         height = +svg.attr('height') - margin.top - margin.bottom;
 

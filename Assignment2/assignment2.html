@@ -20,6 +20,8 @@
         .centered {
             text-align: center;
             align-content: center;
+            margin: 0 auto;
+            display: block;
         }
 
         /*
@@ -61,11 +63,6 @@
             fill: brown;
         }
 
-        svg {
-            margin: 0 auto;
-            display: block;
-        }
-
         .line {
             fill: none;
             stroke: steelblue;
@@ -90,10 +87,14 @@
 <body>
     <h1 class="centered dark-red">Assignment 2</h1>
 
-    <h2>Zurich</h2>
-    <svg id="plot-zurich" width="960" height="500"></svg>
+    <h2 class="centered">Zurich</h2>
+    <svg id="plot-minmax-zurich" class="centered" width="960" height="500"></svg>
 
-    <svg id="plot2-zurich" width="960" height="600"></svg>
+    <h2 class="centered">St. Petersburg</h2>
+    <svg id="plot-minmax-st_petersburg" class="centered" width="960" height="500"></svg>
+
+    <h2 class="centered">Zurich</h2>
+    <svg id="plot-seasons-zurich" class="centered" width="960" height="600"></svg>
 
 </body>
 
