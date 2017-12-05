@@ -6,6 +6,7 @@ function init() {
 
     plotGraphs('zurich');
     plotGraphs('st_petersburg');
+    plotGraphs('copenhagen');
 }
 
 function plotGraphs(station) {
@@ -127,7 +128,7 @@ function plotMinMax(data, station) {
         .text('Trendline:')
         .attr('class', 'text-label')
         .attr('x', _ => x(x2) - 60)
-        .attr('y', _ => height - 40);
+        .attr('y', _ => height - 30);
 
     // display equation on the chart
     svg.append('text')
@@ -135,14 +136,14 @@ function plotMinMax(data, station) {
             decimalFormat(leastSquaresCoeff[1]))
         .attr('class', 'text-label')
         .attr('x', _ => x(x2) - 60)
-        .attr('y', _ => height - 25);
+        .attr('y', _ => height - 15);
 
     // display r-square on the chart
     svg.append('text')
         .text('r-sq: ' + decimalFormat(leastSquaresCoeff[2]))
         .attr('class', 'text-label')
         .attr('x', _ => x(x2) - 60)
-        .attr('y', _ => height - 10);
+        .attr('y', _ => height);
 }
 
 
