@@ -225,6 +225,7 @@ function plotSeasons(data, station) {
     g.append('path')
         .data([data])
         .attr('class', 'line')
+        .style('stroke', 'steelblue')
         .attr('d', valueline);
 
     g.append('path')
@@ -267,7 +268,7 @@ function plotSeasons(data, station) {
         .attr('r', 5)
         .attr('fill', function (d) {
             if (d === 'DJF')
-                return 'blue';
+                return 'steelblue';
             else if (d === 'MAM')
                 return 'red';
             else if (d === 'JJA')
