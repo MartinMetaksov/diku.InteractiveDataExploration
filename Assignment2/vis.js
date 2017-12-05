@@ -26,6 +26,8 @@ function plotGraphs(station) {
 
 function plotMinMax(data, station) {
 
+    // Bar plot inspired by https://bl.ocks.org/mbostock/3885304
+
     let svg = d3.select('#plot-minmax-' + station);
     if (svg.empty()) return;
 

@@ -11,41 +11,78 @@
 </head>
 
 <body>
-    <h1 class="centered dark-red">Assignment 2</h1>
+    <h1 class="centered dark-red">Assignment 2 - How has the weather changed over the past 100 years?</h1>
 
-    <h2 class="centered">Copenhagen(Min-Max)</h2>
+    <p>Temperatures measured on land and at sea for more than a century show that Earth's globally averaged surface
+        temperature is rising. Since 1970, global surface temperature rose at an average rate of about 0.17°C
+        per decade—more than twice as fast as the 0.07°C per decade increase observed for the entire period of recorded
+        observations (1880-2015). The average global temperature for 2016 was 0.94°C above the 20<sup>th</sup>
+        century average of 13.9°C, surpassing the previous record warmth of 2015 by 0.04°C.
+        <a href="https://www.climate.gov/news-features/understanding-climate/climate-change-global-temperature">
+            Climate Change: Global Temperature, LuAnn Dahlman, September 11, 2017
+        </a>
+    </p>
+
+    <h2 class="centered">Copenhagen (Annual temperatures)</h2>
     <svg id="plot-minmax-copenhagen" class="centered" width="960" height="500"></svg>
 
-    <h2 class="centered">St. Petersburg (Min-Max)</h2>
+    <h2 class="centered">St. Petersburg (Annual temperatures)</h2>
     <svg id="plot-minmax-st_petersburg" class="centered" width="960" height="500"></svg>
+
+    <p>For these 2 visualizations, we computed annual min, max and average temperatures to show how annual temperature
+        ranges differed from year to year in Copenhagen and St. Petersburg.</p>
+    <p>As expected, we can see signs of global warming by observing the trendline of average annual temperatures
+        computed by least-squares fit. In Copenhagen,
+        the temperature between years 1880-2011 changed by approx. 2 °C.
+        In St. Petersburg, the temperature between years 1880-2016 changed by approx. 3 °C.</p>
+    <p>Plot was inspired by: <a href="https://bl.ocks.org/mbostock/3885304">bar plot</a> and
+        <a href="http://bl.ocks.org/benvandyke/8459843">trendline</a>.</p>
 
     <h2 class="centered">Zurich (Seasons)</h2>
     <svg id="plot-seasons-zurich" class="centered" width="960" height="600"></svg>
-    <p>This visualization allows us to observe the temperature changes, between 1880 and 2016, according to the different seasons of the year.</p>
-    <p>From these different line charts we notice a very slight increase in temperature for the winter, autumn and spring seasons. Nevertheless we realize that it is for the winter season that global warming is the most visible. Indeed, we notice that the temperature has on average increased by about 2 °C until today. These different line charts of the evolution of the temperature during the seasons also allow us to realize that on average some years were more rigorous than others and that there is a consequent temperature difference between the summer months and winter while the temperatures of the spring and autumn months remain almost identical.</p>
+    <p>This visualization allows us to observe the temperature changes, between 1880 and 2016, according to the different
+        seasons of the year.</p>
+    <p>From these different line charts we notice a very slight increase in temperature for the winter, autumn and
+        spring seasons. Nevertheless we realize that it is for the winter season that global warming is the most visible.
+        Indeed, we notice that the temperature has on average increased by about 2 °C until today. These different line
+        charts of the evolution of the temperature during the seasons also allow us to realize that on average some
+        years were more rigorous than others and that there is a consequent temperature difference between the summer
+        months and winter while the temperatures of the spring and autumn months remain almost identical.</p>
 
     <br>
-    <div class="donutTitles">
-        <h2 class="centered">Zurich (Months)</h2>
+    <div class="centered">
+        <div class="donutTitles">
+            <h2 class="centered">Zurich (Months)</h2>
+        </div>
+        <div class="donutTitles">
+            <h2 class="centered">St. Petersburg (Months)</h2>
+        </div>
+        <div class="donutTitles">
+            <h2 class="centered">Copenhagen (Months)</h2>
+        </div>
+        <svg id="plot-months-zurich" class="" width="380" height="380"></svg>
+        <svg id="plot-months-st_petersburg" class="" width="380" height="380"></svg>
+        <svg id="plot-months-copenhagen" class="" width="380" height="380"></svg>
     </div>
-    <div class="donutTitles">
-        <h2 class="centered">St. Petersburg (Months)</h2>
-    </div>
-    <div class="donutTitles">
-        <h2 class="centered">Copenhagen (Months)</h2>
-    </div>
-    <svg id="plot-months-zurich" class="" width="380" height="380"></svg>
-    <svg id="plot-months-st_petersburg" class="" width="380" height="380"></svg>
-    <svg id="plot-months-copenhagen" class="" width="380" height="380"></svg>
+
     <h2 class="centered">Individual part</h2>
+    <h2 class="centered">Question 3.1 (Marek Hlava)</h2>
+
     <h2 class="centered">Question 3.2 (Alex Lonchambon)</h2>
-    <p>We want to illustrate the phenomenon of the increasing temperature due to global warming. Thus the addition of a dynamic map visualization could help to evaluate this temperature evolution. Take for example this <a href="http://100ansdetour.fr/">data visualization</a>, which illustrates 100 years of the Tour de France. We could realize a visualization similar to this one, which can allowed to visualize on a map the evolution of the temperature (associated with a color scheme going from blue for a cold temperature and judged in the norm, against a red color for a temperature considered hot and out of the norm) during a specific year.</p>
-    <p>Moreover, with a dynamic map visualization it would be possible to represent any other elements related to global warming, such as:</p>
+    <p>We want to illustrate the phenomenon of the increasing temperature due to global warming. Thus the addition of
+        a dynamic map visualization could help to evaluate this temperature evolution. Take for example this
+        <a href="http://100ansdetour.fr/">data visualization</a>, which illustrates 100 years of the Tour de France.
+        We could realize a visualization similar to this one, which can allowed to visualize on a map the evolution
+        of the temperature (associated with a color scheme going from blue for a cold temperature and judged in the norm,
+        against a red color for a temperature considered hot and out of the norm) during a specific year.</p>
+    <p>Moreover, with a dynamic map visualization it would be possible to represent any other elements related to global
+        warming, such as:</p>
     <ul>
         <li>The evolution of the rising waters</li>
-        <li>The effect on animals and plants (migration, disappearance)</li> 
+        <li>The effect on animals and plants (migration, disappearance)</li>
     </ul>>
-    <p>These elements could be added as streams or color boxes to the geographical area or could also be represented as statistical data in a side window.</p>
+    <p>These elements could be added as streams or color boxes to the geographical area or could also be represented as
+        statistical data in a side window.</p>
     <p>This type of visualization could also make it possible to compare two years in particular.</p>
 </body>
 
