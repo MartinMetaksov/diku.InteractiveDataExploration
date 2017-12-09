@@ -1,0 +1,66 @@
+/*
+Same as the one used in index.html, but this is how it is required by the assignment
+*/
+
+.centered {
+    text-align: center;
+    align-content: center;
+    margin: 0 auto;
+    display: block;
+}
+
+/*
+Enforces image to have a fixed width
+ */
+
+.small-image {
+    width: 250px;
+    /* height is auto by default */
+}
+
+.large-image {
+    width: 750px;
+}
+
+/*
+Fixes centering ul within a div
+ */
+
+ul {
+    display: inline-block;
+    text-align: left;
+}
+
+body {
+    padding-left: 100px;
+    padding-right: 100px;
+}
+
+/*
+ * Tree-specific styles
+ */
+.node {
+    cursor: pointer;
+}
+
+.node circle {
+    fill: #fff;
+    stroke: steelblue;
+    stroke-width: 1.5px;
+}
+
+.parent, .node circle {
+    fill: blue;
+    stroke: blue;
+    stroke-width: 0.5px;
+}
+
+.node text {
+    font: 10px sans-serif;
+}
+
+.link {
+    fill: none;
+    stroke: #ccc;
+    stroke-width: 1.5px;
+}
