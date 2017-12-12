@@ -1,33 +1,43 @@
 {
   "name": "Donald Trump",
   "twitter": "realDonaldTrump",
+  "born": "6/14/1946",
   "partners": [
     {
       "name": "Ivana Trump",
       "twitter": "IvanaTrump1",
+      "born": "2/20/1949",
+      "divorced": true,
       "children": [
         {
           "name": "Donald Trump Jr.",
           "twitter": "DonaldJTrumpJr",
+          "born": "12/31/1977",
           "partners": [
             {
               "name": "Vanessa Trump",
               "twitter": "MrsVanessaTrump",
+              "born": "12/18/1977",
               "children": [
                 {
-                  "name": "Kai Madison"
+                  "name": "Kai Madison",
+                  "born": "5/12/2007"
                 },
                 {
-                  "name": "Donald III"
+                  "name": "Donald III",
+                  "born": "2/18/2009"
                 },
                 {
-                  "name": "Chloe Sophia"
+                  "name": "Tristan Milos",
+                  "born": "10/2/2011"
                 },
                 {
-                  "name": "Tristan Milos"
+                  "name": "Spencer Frederick",
+                  "born": "10/21/2012"
                 },
                 {
-                  "name": "Spencer Frederick"
+                  "name": "Chloe Sophia",
+                  "born": "6/16/2014"
                 }
               ]
             }
@@ -36,19 +46,24 @@
         {
           "name": "Ivanka Trump",
           "twitter": "IvankaTrump",
+          "born": "10/30/1981",
           "partners": [
             {
               "name": "Jared Kushner",
               "twitter": "jaredkushner",
+              "born": "1/10/1981",
               "children": [
                 {
-                  "name": "Arabella Rose"
+                  "name": "Arabella Rose",
+                  "born": "7/17/2011"
                 },
                 {
-                  "name": "Joseph Frederick"
+                  "name": "Joseph Frederick",
+                  "born": "10/24/2013"
                 },
                 {
-                  "name": "Theodore James"
+                  "name": "Theodore James",
+                  "born": "3/27/2016"
                 }
               ]
             }
@@ -57,10 +72,18 @@
         {
           "name": "Eric Trump",
           "twitter": "EricTrump",
+          "born": "1/6/1984",
           "partners": [
             {
               "name": "Lara Trump",
-              "twitter": "LaraLeaTrump"
+              "twitter": "LaraLeaTrump",
+              "born": "11/12/1982",
+              "children": [
+                {
+                  "name": "Eric Luke Trump",
+                  "born": "9/12/2017"
+                }
+              ]
             }
           ]
         }
@@ -69,19 +92,24 @@
     {
       "name": "Marla Maples",
       "twitter": "itsmarlamaples",
+      "born": "10/27/1963",
+      "divorced": true,
       "children": [
         {
           "name": "Tiffany Trump",
-          "twitter": "TiffanyATrump"
+          "twitter": "TiffanyATrump",
+          "born": "10/13/1993"
         }
       ]
     },
     {
       "name": "Melania Trump",
       "twitter": "MELANIATRUMP",
+      "born": "4/26/1970",
       "children": [
         {
-          "name": "Baron Trump"
+          "name": "Baron Trump",
+          "born": "3/20/2006"
         }
       ]
     }

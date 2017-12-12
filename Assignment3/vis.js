@@ -4,6 +4,13 @@ function getTwitterAvatar(handle) {
     return 'https://twitter.com/' + handle + '/profile_image?size=bigger';
 }
 
+// Age calculation: https://stackoverflow.com/a/21984136/2627680
+function calculateAge(birthday) { // birthday is a date
+    const ageDifMs = Date.now() - birthday.getTime();
+    const ageDate = new Date(ageDifMs); // miliseconds from epoch
+    return Math.abs(ageDate.getUTCFullYear() - 1970);
+}
+
 function loadData() {
     d3.json(
         'data/trump_family.json',
@@ -125,7 +132,7 @@ function init(data, linearData) {
             .attr('x', d => d.children || d._children ? -radius - 3 : radius + 3)
             .attr('y', -10)
             .attr('text-anchor', d => d.children || d._children ? 'end' : 'start')
-            .text(d => d.data.name);
+            .text(d => d.data.name + ', age ' + calculateAge(new Date(d.data.born)));
 
         // UPDATE
         const nodeUpdate = nodeEnter.merge(node);
