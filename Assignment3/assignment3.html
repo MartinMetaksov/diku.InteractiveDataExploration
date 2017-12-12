@@ -27,16 +27,17 @@
     <div class="container">
         <p>To draw the family tree, we used d3v4.js. However, trees in d3 are not thought to be used as family trees.
             Therefore, the representation of the family tree of Trump's family is not represented in a classical way
-            with horizontal connections to spouses.</p>
-        <p>Nevertheless, in order to make the reading of the family tree as informative as possible, several things have
-            been added:</p>
+            with horizontal connections to spouses. In order to distinguish between partners and children,
+            we reduced the distance between the tree nodes for partners. Furthermore, we
+            used separate line styles in order to underline their connection.</p>
+        <p>In order to make the reading of the family tree as informative as possible, we added several things:</p>
         <ul>
-            <li>The full name and age of every Trump family member.</li>
-            <li>Twitter profile pictures of Trump's relatives (i.e. not the kids).</li>
+            <li>The full name and computed age of every Trump family member.</li>
+            <li>Current Twitter profile pictures of Trump's relatives (i.e. not the kids).</li>
             <li>A legend that illustrates (in a mix of color and style) children, spouses and divorces.</li>
         </ul>
-        <p>In order to distinguish between partners and children, we reduced the distance between the tree nodes for partners. Furthermore, we
-        used separate line styles in order to underline their connection.</p>
+        <p>There's also an interactive element; clicking on a node hides any child nodes. Since we have Twitter handles
+            for all the adult members, we could also link to their profiles or display their latest posts on mouse hover.</p>
         <br>
     </div>
 </body>
