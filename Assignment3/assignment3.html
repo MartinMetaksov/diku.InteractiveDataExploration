@@ -13,7 +13,18 @@
 <body>
     <div class="box">
         <h1 class="centered">Assignment 3 - Trump family tree</h1>
-        <svg id="trump"></svg>
+        <svg id="trump">
+            <g class="legend" transform="translate(40,40)">
+                <line x1="10" y1="3" x2="100" y2="3" stroke-width="3" stroke="blue" />
+                <text x="120" y="8">Partners/Spouse</text>
+                <line x1="10" y1="23" x2="100" y2="23" stroke-dasharray="10, 10" stroke-width="3" stroke="blue" />
+                <text x="120" y="28">Partners (Divorced)</text>
+                <line x1="10" y1="43" x2="100" y2="43" stroke-width="1" stroke="red" />
+                <text x="120" y="48">Children</text>
+            </g>
+        </svg>
+
+
     </div>
 </body>
 

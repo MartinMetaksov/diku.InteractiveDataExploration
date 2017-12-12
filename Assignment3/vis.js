@@ -1,10 +1,13 @@
 d3.select(window).on('load', loadData);
 
+let depth_spouses = 0;
+let depth_children = 0;
+
 function getTwitterAvatar(handle) {
     return 'https://twitter.com/' + handle + '/profile_image?size=bigger';
 }
-
 // Age calculation: https://stackoverflow.com/a/21984136/2627680
+// Tree inspiration: https://bl.ocks.org/tejaser/55c43b4a9febca058363a5e58edbce81
 function calculateAge(birthday) { // birthday is a date
     const ageDifMs = Date.now() - birthday.getTime();
     const ageDate = new Date(ageDifMs); // miliseconds from epoch
@@ -29,6 +32,25 @@ function extractLinearData(treeData) {
         : (treeData.children ? treeData.children : []);
 
     return [node].concat(...innerNodes.map(node => extractLinearData(node)));
+}
+
+function isParent(d) {
+    return d.parent && 'partners' in d.parent.data;
+}
+
+function getDepthOfSpousesAndChildren(d) {
+    if (d.depth === 0) {
+        return [0, 0];
+    } else {
+        let x = d,
+            parentsDepth = 0,
+            childrenDepth = 0;
+        while (x.parent) {
+            isParent(x) ? parentsDepth += 1 : childrenDepth += 1;
+            x = x.parent;
+        }
+        return [parentsDepth, childrenDepth];
+    }
 }
 
 function init(data, linearData) {
@@ -97,7 +119,10 @@ function init(data, linearData) {
 
         // Normalize for fixed-depth.
         nodes.forEach(d => {
-            d.y = d.depth * 180
+            let x = getDepthOfSpousesAndChildren(d);
+            let parentsDepth = x[0],
+                childrensDepth = x[1];
+            d.y = parentsDepth * 120 + childrensDepth * 300;
         });
 
         // ****************** Nodes section ***************************
@@ -129,9 +154,12 @@ function init(data, linearData) {
         // Add labels for the nodes
         nodeEnter.append('text')
             .attr('dy', '.35em')
-            .attr('x', d => d.children || d._children ? -radius - 3 : radius + 3)
-            .attr('y', -10)
-            .attr('text-anchor', d => d.children || d._children ? 'end' : 'start')
+            .attr('x', d => d.children || d._children ? 0 : radius + 10)
+            .attr('y', d => d.children || d._children
+                ? 40 : 0
+            )
+            .attr('text-anchor', d => d.children || d._children ? 'middle' : 'start')
+            // .attr('text-anchor', 'middle')
             .text(d => d.data.name + ', age ' + calculateAge(new Date(d.data.born)));
 
         // UPDATE
@@ -168,16 +196,11 @@ function init(data, linearData) {
         const link = group.selectAll('path.link')
             .data(links, d => d.id)
             .style('stroke-width', d => {
-                if (isParent(d)) {
-                    return 5;
-                } else {
-                    return 1;
-                }
+                return isParent(d) ? 3 : 1;
+            })
+            .style('stroke', d => {
+                return isParent(d) ? 'blue' : 'red';
             });
-
-        function isParent(d) {
-            return d.parent && 'partners' in d.parent.data;
-        }
 
         // Enter any new links at the parent's previous position.
         const linkEnter = link.enter().insert('path', 'g')
@@ -187,11 +210,10 @@ function init(data, linearData) {
                 return diagonal(o, o)
             })
             .style('stroke-width', d => {
-                if (isParent(d)) {
-                    return 5;
-                } else {
-                    return 1;
-                }
+                return isParent(d) ? 3 : 1;
+            })
+            .style('stroke', d => {
+                return isParent(d) ? 'blue' : 'red';
             });
 
         // UPDATE

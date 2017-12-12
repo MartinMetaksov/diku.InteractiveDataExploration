@@ -38,8 +38,8 @@ svg {
 }
 
 .parent, .node circle {
-    fill: blue;
-    stroke: blue;
+    fill: black;
+    stroke: black;
     stroke-width: 0.5px;
 }
 
