@@ -1,7 +1,3 @@
-/*
-Same as the one used in index.html, but this is how it is required by the assignment
-*/
-
 .centered {
     text-align: center;
     align-content: center;
@@ -9,31 +5,23 @@ Same as the one used in index.html, but this is how it is required by the assign
     display: block;
 }
 
-/*
-Enforces image to have a fixed width
- */
-
-.small-image {
-    width: 250px;
-    /* height is auto by default */
+body, html {
+    padding: 0;
+    margin: 0;
+    height: 100%;
+    width: 100%;
 }
 
-.large-image {
-    width: 750px;
+.box {
+    display: flex;
+    flex-flow: column;
+    height: 100%;
 }
 
-/*
-Fixes centering ul within a div
- */
-
-ul {
-    display: inline-block;
-    text-align: left;
-}
-
-body {
-    padding-left: 100px;
-    padding-right: 100px;
+svg {
+    width: 100%;
+    display: block;
+    flex: 1 1 auto;
 }
 
 /*
@@ -56,7 +44,7 @@ body {
 }
 
 .node text {
-    font: 10px sans-serif;
+    font: 10pt sans-serif;
 }
 
 .link {

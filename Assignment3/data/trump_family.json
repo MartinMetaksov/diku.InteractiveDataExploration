@@ -1,14 +1,18 @@
 {
   "name": "Donald Trump",
+  "twitter": "realDonaldTrump",
   "partners": [
     {
       "name": "Ivana Trump",
+      "twitter": "IvanaTrump1",
       "children": [
         {
           "name": "Donald Trump Jr.",
+          "twitter": "DonaldJTrumpJr",
           "partners": [
             {
               "name": "Vanessa Trump",
+              "twitter": "MrsVanessaTrump",
               "children": [
                 {
                   "name": "Kai Madison"
@@ -31,9 +35,11 @@
         },
         {
           "name": "Ivanka Trump",
+          "twitter": "IvankaTrump",
           "partners": [
             {
               "name": "Jared Kushner",
+              "twitter": "jaredkushner",
               "children": [
                 {
                   "name": "Arabella Rose"
@@ -50,9 +56,11 @@
         },
         {
           "name": "Eric Trump",
+          "twitter": "EricTrump",
           "partners": [
             {
-              "name": "Lara Yunaska"
+              "name": "Lara Trump",
+              "twitter": "LaraLeaTrump"
             }
           ]
         }
@@ -60,14 +68,17 @@
     },
     {
       "name": "Marla Maples",
+      "twitter": "itsmarlamaples",
       "children": [
         {
-          "name": "Tiffany Trump"
+          "name": "Tiffany Trump",
+          "twitter": "TiffanyATrump"
         }
       ]
     },
     {
-      "name": "Melanie Trump",
+      "name": "Melania Trump",
+      "twitter": "MELANIATRUMP",
       "children": [
         {
           "name": "Baron Trump"
