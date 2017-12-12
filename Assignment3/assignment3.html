@@ -13,7 +13,30 @@
 <body>
     <div class="box">
         <h1 class="centered">Assignment 3 - Trump family tree</h1>
-        <svg id="trump"></svg>
+        <svg id="trump">
+            <g class="legend" transform="translate(40,40)">
+                <line x1="10" y1="3" x2="100" y2="3" stroke-width="3" stroke="blue" />
+                <text x="120" y="8">Partners/Spouses</text>
+                <line x1="10" y1="23" x2="100" y2="23" stroke-dasharray="10, 10" stroke-width="3" stroke="blue" />
+                <text x="120" y="28">Partners/Spouses (Divorced)</text>
+                <line x1="10" y1="43" x2="100" y2="43" stroke-width="1" stroke="red" />
+                <text x="120" y="48">Children</text>
+            </g>
+        </svg>
+    </div>
+    <div class="container">
+        <p>To draw a family tree, we use d3v4.js. However, trees in d3 are not thought to be used as a family tree.
+            Therefore, the representation of the family tree of Trump's family is not represented in a classical way
+            with a horizontal connection to spouses.</p>
+        <p>Nevertheless, in order to make the reading of the family tree as simple as possible, several things have
+            been added:</p>
+        <ul>
+            <li>The full name and age of each Trump’s family members.</li>
+            <li>The images of each of the Trump’s relatives, added from Twitter. Thus, the family members without
+                any image displayed are therefore all children under 13 years (legal age to have a twitter account).</li>
+            <li>A legend that illustrate (in a mix of color and style) children, spouses and divorces.</li>
+        </ul>
+        <br>
     </div>
 </body>
 
