@@ -38,6 +38,10 @@ function isParent(d) {
     return d.parent && 'partners' in d.parent.data;
 }
 
+function isDivorced(d) {
+    return 'divorced' in d.data;
+}
+
 function getDepthOfSpousesAndChildren(d) {
     if (d.depth === 0) {
         return [0, 0];
@@ -154,13 +158,15 @@ function init(data, linearData) {
         // Add labels for the nodes
         nodeEnter.append('text')
             .attr('dy', '.35em')
-            .attr('x', d => d.children || d._children ? 0 : radius + 10)
-            .attr('y', d => d.children || d._children
-                ? 40 : 0
-            )
+            .attr('x', function(d) {
+                return d.depth === 0 ? - 85: d.children || d._children ? 0 : radius + 10;
+            })
+            .attr('y', function (d) {
+                return d.depth === 0 ? 0 : d.children || d._children ? -35 : 0;
+            })
             .attr('text-anchor', d => d.children || d._children ? 'middle' : 'start')
-            // .attr('text-anchor', 'middle')
-            .text(d => d.data.name + ', age ' + calculateAge(new Date(d.data.born)));
+            // .text(d => d.data.name + ', age ' + calculateAge(new Date(d.data.born)));
+            .html(d => d.data.name + ', ' + calculateAge(new Date(d.data.born)));
 
         // UPDATE
         const nodeUpdate = nodeEnter.merge(node);
@@ -211,6 +217,13 @@ function init(data, linearData) {
             })
             .style('stroke-width', d => {
                 return isParent(d) ? 3 : 1;
+            })
+            .style('stroke-dasharray', d => {
+                if (isParent(d) && isDivorced(d)) {
+                    return [10, 10];
+                } else {
+                    return [0, 0];
+                }
             })
             .style('stroke', d => {
                 return isParent(d) ? 'blue' : 'red';
