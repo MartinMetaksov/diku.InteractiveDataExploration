@@ -1,5 +1,11 @@
 d3.select(window).on('load', loadData);
 
+let formatter = d3.format('0.2f');
+
+function zip(a, b) {
+    return a.map(function(e, i) { return [e, b[i]]; });
+}
+
 function loadData() {
     d3.text('data/hands.csv', (error1, hands) => {
         if (error1) throw error1;
@@ -21,6 +27,8 @@ function getHandAt(hands, index) {
     return ret;
 }
 
+
+
 function init(hands, hands_pca) {
 
     const svgElem = document.getElementById('hands');
@@ -33,26 +41,29 @@ function init(hands, hands_pca) {
 
     const handIndex = 0;
 
+    const svg2Elem = document.getElementById('pca');
     const svg2 = d3.select('#pca');
+    const svg2width = svg2Elem.clientWidth;
+    const svg2height = svg2Elem.clientHeight;
 
-    plotHand(getHandAt(hands, handIndex), svg, width / 2, pointMin, pointMax);
+    plotHand(getHandAt(hands, handIndex), svg, width / 2, width, height, pointMin, pointMax);
     plotScatter(hands_pca.map(function(val, i) { return val[0] }),
         hands_pca.map(function(val, i) { return val[1] }),
-        svg2, width / 2);
+        svg2, svg2width, svg2height);
 }
 
-function plotHand(hand, svg, size, pointMin, pointMax) {
+function plotHand(hand, svg, size, width, height, pointMin, pointMax) {
 
     const x = d3.scaleLinear().rangeRound([0, size]);
     const y = d3.scaleLinear().rangeRound([size, 0]);
-    const radius = size / hand.length / 2;
+    const radius = size / hand.length / 4;
 
     x.domain([pointMin, pointMax]);
     y.domain([pointMin, pointMax]);
 
     // Rotate to show the hand vertically
     const g = svg.append('g')
-        .attr('transform', 'translate(' + 0 + ',' + 0 + ') rotate(90,' + size + ',' + size + ')');
+        .attr('transform', 'translate(' + (-size/2.5) + ',' + 0 + ') rotate(90,' + size + ',' + size + ')');
 
     // Add selectable points
     g.selectAll('.point')
@@ -80,74 +91,44 @@ function plotHand(hand, svg, size, pointMin, pointMax) {
         .attr('stroke-width', radius / 3);
 }
 
-function plotScatter(xs, ys, hands_pca, size) {
+function plotScatter(xs, ys, hands_pca, width, height) {
 
-    console.log('xs:');
-    console.log(xs);
-    console.log('ys:');
-    console.log(ys);
-    data = new Array();
+    const offset = 0.05;
 
     const pointMinX = d3.min(xs, hand_pca => Math.min(...xs));
     const pointMaxX = d3.max(xs, hand_pca => Math.max(...xs));
     const pointMinY = d3.min(ys, hand_pca => Math.min(...ys));
     const pointMaxY = d3.max(ys, hand_pca => Math.max(...ys));
 
-    console.log(pointMinX);
-    console.log(pointMaxX);
-    console.log(pointMinY);
-    console.log(pointMaxY);
+    const x = d3.scaleLinear().rangeRound([0, width-50]);
+    const y = d3.scaleLinear().rangeRound([height-30, 0]);
 
-
-    for(var i=0; i<xs.length; i++)
-        data[i] = new Array()
-
-    for(var i=0; i<xs.length; i++)
-        for(var j=0; j<2; j++)
-            data[i][j] = 0;
-
-    for(var i=0; i<xs.length; i++)
-        data[i][0] = xs[i];
-
-    for(var i=0; i<xs.length; i++)
-        data[i][1] = ys[i];
-    console.log('size '+ size);
-    const x = d3.scaleLinear().rangeRound([0, 500]);
-    const y = d3.scaleLinear().rangeRound([150, 0]);
-
-    x.domain([pointMinX, pointMaxX]);
-    y.domain([pointMinY, pointMaxY]);
+    x.domain([pointMinX-offset, pointMaxX+offset]);
+    y.domain([pointMinY-offset, pointMaxY+offset]);
 
     let g = hands_pca.append('g')
-        .attr('transform', 'translate(' + 90 + ',' + 100 + ')');
+        .attr('transform', 'translate(' + 30 + ',' + 10 + ')');
 
     g.append('g')
-        .attr('class', 'axis axis--y')
-        .attr("transform", "translate(219.3,0)")
-        .call(d3.axisRight(y))
-        .append('text')
-        .attr('transform', 'rotate(70)')
-        .attr('y', -5)
-        .attr('dy', '0.71em')
-        .attr('fill', '#000')
+        .attr("transform", "translate(0, 0)")
+        .call(d3.axisLeft(y).ticks(5));
 
     g.append('g')
-        .attr("class", "x axis")
-        .attr("transform", "translate(0,78.5)")
-        .call(d3.axisBottom(x).ticks(5))
+        .attr("transform", "translate(0, 270)")
+        .call(d3.axisBottom(x).ticks(10));
 
     g.selectAll('circle')
-        .data(data)
+        .data(zip(xs, ys))
         .enter()
         .append('circle')
-        .attr('cx', function(d){console.log('x: ' + d[0]);return x(d[0]) + "px";})
-        .attr('cy', function(d){console.log('y: ' + d[1]); return y(d[1]) + "px";})
-        .attr('r', '3px')
-        .attr('fill', 'black')
+        .attr('cx', d => x(d[0]) + "px")
+        .attr('cy', d => y(d[1]) + "px")
+        .attr('r', '5px')
+        .attr('fill', 'grey')
         .append('svg:title')
         .html(d =>
-            '<span>x = ' + (d[0]) + '</span>' +
+            '<span>x = ' + formatter(d[0]) + '</span>' +
             '<br />' +
-            '<span>y = ' + (d[1]) + '</span>'
+            '<span>y = ' + formatter(d[1]) + '</span>'
         );
 }

@@ -23,7 +23,7 @@ body, html {
     width: 49%;
     white-space: normal;
     height: 300px;
-    border: 1px solid red; /* todo: change to something better */
+    /*border: 1px solid red; !* todo: change to something better *!*/
 }
 
 .container {
