@@ -14,7 +14,6 @@ function getHandAt(hands, index) {
 
     const hand = hands[index];
     const coords = hand.length / 2;
-
     const ret = [];
     for (let i = 0; i < coords; ++i) {
         ret.push({x: +hand[i], y: +hand[i + coords]});
@@ -31,6 +30,7 @@ function init(hands, hands_pca) {
     const svg = d3.select('#hands');
     const pointMin = d3.min(hands, hand => Math.min(...hand));
     const pointMax = d3.max(hands, hand => Math.max(...hand));
+
     const handIndex = 0;
 
     const svg2 = d3.select('#pca');
@@ -38,7 +38,7 @@ function init(hands, hands_pca) {
     plotHand(getHandAt(hands, handIndex), svg, width / 2, pointMin, pointMax);
     plotScatter(hands_pca.map(function(val, i) { return val[0] }),
         hands_pca.map(function(val, i) { return val[1] }),
-        svg2);
+        svg2, width / 2);
 }
 
 function plotHand(hand, svg, size, pointMin, pointMax) {
@@ -80,9 +80,74 @@ function plotHand(hand, svg, size, pointMin, pointMax) {
         .attr('stroke-width', radius / 3);
 }
 
-function plotScatter(xs, ys, hands_pca) {
+function plotScatter(xs, ys, hands_pca, size) {
+
     console.log('xs:');
     console.log(xs);
     console.log('ys:');
     console.log(ys);
+    data = new Array();
+
+    const pointMinX = d3.min(xs, hand_pca => Math.min(...xs));
+    const pointMaxX = d3.max(xs, hand_pca => Math.max(...xs));
+    const pointMinY = d3.min(ys, hand_pca => Math.min(...ys));
+    const pointMaxY = d3.max(ys, hand_pca => Math.max(...ys));
+
+    console.log(pointMinX);
+    console.log(pointMaxX);
+    console.log(pointMinY);
+    console.log(pointMaxY);
+
+
+    for(var i=0; i<xs.length; i++)
+        data[i] = new Array()
+
+    for(var i=0; i<xs.length; i++)
+        for(var j=0; j<2; j++)
+            data[i][j] = 0;
+
+    for(var i=0; i<xs.length; i++)
+        data[i][0] = xs[i];
+
+    for(var i=0; i<xs.length; i++)
+        data[i][1] = ys[i];
+    console.log('size '+ size);
+    const x = d3.scaleLinear().rangeRound([0, 500]);
+    const y = d3.scaleLinear().rangeRound([150, 0]);
+
+    x.domain([pointMinX, pointMaxX]);
+    y.domain([pointMinY, pointMaxY]);
+
+    let g = hands_pca.append('g')
+        .attr('transform', 'translate(' + 90 + ',' + 100 + ')');
+
+    g.append('g')
+        .attr('class', 'axis axis--y')
+        .attr("transform", "translate(219.3,0)")
+        .call(d3.axisRight(y))
+        .append('text')
+        .attr('transform', 'rotate(70)')
+        .attr('y', -5)
+        .attr('dy', '0.71em')
+        .attr('fill', '#000')
+
+    g.append('g')
+        .attr("class", "x axis")
+        .attr("transform", "translate(0,78.5)")
+        .call(d3.axisBottom(x).ticks(5))
+
+    g.selectAll('circle')
+        .data(data)
+        .enter()
+        .append('circle')
+        .attr('cx', function(d){console.log('x: ' + d[0]);return x(d[0]) + "px";})
+        .attr('cy', function(d){console.log('y: ' + d[1]); return y(d[1]) + "px";})
+        .attr('r', '3px')
+        .attr('fill', 'black')
+        .append('svg:title')
+        .html(d =>
+            '<span>x = ' + (d[0]) + '</span>' +
+            '<br />' +
+            '<span>y = ' + (d[1]) + '</span>'
+        );
 }
