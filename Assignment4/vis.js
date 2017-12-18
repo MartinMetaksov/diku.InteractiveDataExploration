@@ -46,13 +46,18 @@ function init(hands, hands_pca) {
     const svg2width = svg2Elem.clientWidth;
     const svg2height = svg2Elem.clientHeight;
 
-    plotHand(getHandAt(hands, handIndex), svg, width / 2, width, height, pointMin, pointMax);
+    hands.forEach(function (_hand, i) {
+        plotHand(getHandAt(hands, i), svg, width / 2, i, pointMin, pointMax);
+    });
+
+    // plotHand(getHandAt(hands, 1), svg, width / 2, width, height, pointMin, pointMax);
+
     plotScatter(hands_pca.map(function(val, i) { return val[0] }),
         hands_pca.map(function(val, i) { return val[1] }),
         svg2, svg2width, svg2height);
 }
 
-function plotHand(hand, svg, size, width, height, pointMin, pointMax) {
+function plotHand(hand, svg, size, i, pointMin, pointMax) {
 
     const x = d3.scaleLinear().rangeRound([0, size]);
     const y = d3.scaleLinear().rangeRound([size, 0]);
@@ -63,6 +68,7 @@ function plotHand(hand, svg, size, width, height, pointMin, pointMax) {
 
     // Rotate to show the hand vertically
     const g = svg.append('g')
+        .attr('id', 'hand-' + i)
         .attr('transform', 'translate(' + (-size/2.5) + ',' + 0 + ') rotate(90,' + size + ',' + size + ')');
 
     // Add selectable points
@@ -71,6 +77,7 @@ function plotHand(hand, svg, size, width, height, pointMin, pointMax) {
         .enter()
         .append('circle')
         .attr('class', 'point')
+        .attr('class', 'blurred')
         .attr('r', radius)
         .attr('cx', d => x(d.x))
         .attr('cy', d => y(d.y))
@@ -83,12 +90,29 @@ function plotHand(hand, svg, size, width, height, pointMin, pointMax) {
         .enter()
         .append('line')
         .attr('class', 'hand-line')
+        .attr('class', 'blurred')
         .attr('x1', d => x(hand[d].x))
         .attr('y1', d => y(hand[d].y))
         .attr('x2', d => x(hand[d + 1].x))
         .attr('y2', d => y(hand[d + 1].y))
         .attr('stroke', 'black')
         .attr('stroke-width', radius / 3);
+}
+
+function toggleCircleClick(i) {
+    $('#hand-'+i).children().removeClass('semi-blurred').toggleClass('blurred');
+    $('#circle-'+i).toggleClass('clicked');
+}
+
+function hoverCircle(i) {
+    let h = $('#hand-'+i);
+    if (h.children().hasClass('blurred')) {
+        h.children().addClass('semi-blurred');
+    }
+}
+
+function unhoverCircle(i) {
+    $('#hand-'+i).children().removeClass('semi-blurred');
 }
 
 function plotScatter(xs, ys, hands_pca, width, height) {
@@ -121,10 +145,14 @@ function plotScatter(xs, ys, hands_pca, width, height) {
         .data(zip(xs, ys))
         .enter()
         .append('circle')
+        .attr('id', (_, i) => 'circle-'+ i)
         .attr('cx', d => x(d[0]) + "px")
         .attr('cy', d => y(d[1]) + "px")
-        .attr('r', '5px')
-        .attr('fill', 'grey')
+        .attr('r', '6px')
+        .attr('class', 'circle')
+        .on('mouseover', (_, i) => hoverCircle(i))
+        .on('mouseout', (_, i) => unhoverCircle(i))
+        .on('click', (_, i) => toggleCircleClick(i))
         .append('svg:title')
         .html(d =>
             '<span>x = ' + formatter(d[0]) + '</span>' +

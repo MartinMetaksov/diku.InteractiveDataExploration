@@ -23,7 +23,6 @@ body, html {
     width: 49%;
     white-space: normal;
     height: 300px;
-    /*border: 1px solid red; !* todo: change to something better *!*/
 }
 
 .container {
@@ -36,4 +35,25 @@ svg {
     min-height: 100%;
     display: block;
     flex: 1 1 auto;
+}
+
+.blurred {
+    opacity: 0.008;
+}
+
+.semi-blurred {
+    opacity: 0.4 !important;
+}
+
+.circle {
+    fill: lightblue;
+}
+
+.circle:hover {
+    fill: green;
+    cursor: pointer;
+}
+
+.clicked {
+    fill: green;
 }
