@@ -1,13 +1,13 @@
 d3.select(window).on('load', loadData);
 
 function loadData() {
-    d3.text(
-        'data/hands.csv',
-        (error, data) => {
-            if (error) throw error;
-
-            init(d3.csvParseRows(data));
+    d3.text('data/hands.csv', (error1, hands) => {
+        if (error1) throw error1;
+        d3.text('data/hands_pca.csv', (error2, hands_pca) => {
+            if (error2) throw error2;
+            init(d3.csvParseRows(hands), d3.csvParseRows(hands_pca));
         });
+    });
 }
 
 function getHandAt(hands, index) {
@@ -22,7 +22,7 @@ function getHandAt(hands, index) {
     return ret;
 }
 
-function init(hands) {
+function init(hands, hands_pca) {
 
     const svgElem = document.getElementById('hands');
     const height = svgElem.clientHeight;
@@ -33,7 +33,12 @@ function init(hands) {
     const pointMax = d3.max(hands, hand => Math.max(...hand));
     const handIndex = 0;
 
-    plotHand(getHandAt(hands, handIndex), svg, width / 2.5, pointMin, pointMax);
+    const svg2 = d3.select('#pca');
+
+    plotHand(getHandAt(hands, handIndex), svg, width / 2, pointMin, pointMax);
+    plotScatter(hands_pca.map(function(val, i) { return val[0] }),
+        hands_pca.map(function(val, i) { return val[1] }),
+        svg2);
 }
 
 function plotHand(hand, svg, size, pointMin, pointMax) {
@@ -73,4 +78,11 @@ function plotHand(hand, svg, size, pointMin, pointMax) {
         .attr('y2', d => y(hand[d + 1].y))
         .attr('stroke', 'black')
         .attr('stroke-width', radius / 3);
+}
+
+function plotScatter(xs, ys, hands_pca) {
+    console.log('xs:');
+    console.log(xs);
+    console.log('ys:');
+    console.log(ys);
 }
