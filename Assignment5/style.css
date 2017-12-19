@@ -1,0 +1,62 @@
+.centered {
+    text-align: center;
+    align-content: center;
+    margin: 0 auto;
+    display: block;
+}
+
+body, html {
+    padding: 0;
+    margin: 0;
+    height: 100%;
+    width: 100%;
+}
+
+.box {
+    display: flex;
+    flex-flow: column;
+    height: 100%;
+}
+
+.floating-box {
+    display: inline-block;
+    width: 49%;
+    white-space: normal;
+}
+
+.svg-box {
+    height: 300px;
+}
+
+.container {
+    margin-left: 7%;
+    margin-right: 7%;
+}
+
+svg {
+    width: 100%;
+    min-height: 100%;
+    display: block;
+    flex: 1 1 auto;
+}
+
+.blurred {
+    opacity: 0.03;
+}
+
+.semi-blurred {
+    opacity: 0.4 !important;
+}
+
+.circle {
+    fill: lightblue;
+}
+
+.circle:hover {
+    fill: green;
+    cursor: pointer;
+}
+
+.clicked {
+    fill: green;
+}
