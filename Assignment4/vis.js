@@ -39,24 +39,24 @@ function init(hands, hands_pca) {
     const pointMin = d3.min(hands, hand => Math.min(...hand));
     const pointMax = d3.max(hands, hand => Math.max(...hand));
 
+    hands.forEach((_hand, i) => {
+        plotHand(getHandAt(hands, i), svg, width, height, i, pointMin, pointMax);
+    });
+
+
     const svg2Elem = document.getElementById('pca');
     const svg2 = d3.select('#pca');
     const svg2width = svg2Elem.clientWidth;
     const svg2height = svg2Elem.clientHeight;
-
-    hands.forEach(function (_hand, i) {
-        plotHand(getHandAt(hands, i), svg, width / 2, i, pointMin, pointMax);
-    });
-
-    // plotHand(getHandAt(hands, 1), svg, width / 2, width, height, pointMin, pointMax);
 
     plotScatter(hands_pca.map(val => val[0]),
         hands_pca.map(val => val[1]),
         svg2, svg2width, svg2height);
 }
 
-function plotHand(hand, svg, size, i, pointMin, pointMax) {
+function plotHand(hand, svg, width, height, i, pointMin, pointMax) {
 
+    const size = Math.min(width, height);
     const x = d3.scaleLinear().rangeRound([0, size]);
     const y = d3.scaleLinear().rangeRound([size, 0]);
     const radius = size / hand.length / 4;
@@ -67,7 +67,7 @@ function plotHand(hand, svg, size, i, pointMin, pointMax) {
     // Rotate to show the hand vertically
     const g = svg.append('g')
         .attr('id', 'hand-' + i)
-        .attr('transform', 'translate(' + (-size/2.5) + ',' + 0 + ') rotate(90,' + size + ',' + size + ')');
+        .attr('transform', 'translate(' + (width-size) + ',' + 0 + ') rotate(90,' + size/2 + ',' + size/2 + ')');
 
     // Add selectable points
     g.selectAll('.point')
@@ -129,14 +129,14 @@ function plotScatter(xs, ys, hands_pca, width, height) {
     y.domain([pointMinY-offset, pointMaxY+offset]);
 
     let g = hands_pca.append('g')
-        .attr('transform', 'translate(' + 30 + ',' + 10 + ')');
+        .attr('transform', 'translate(30, 10)');
 
     g.append('g')
-        .attr("transform", "translate(0, 0)")
+        .attr('transform', 'translate(0, 0)')
         .call(d3.axisLeft(y).ticks(5));
 
     g.append('g')
-        .attr("transform", "translate(0, 270)")
+        .attr('transform', 'translate(0, ' + (height - 30) + ')')
         .call(d3.axisBottom(x).ticks(10));
 
     g.selectAll('circle')
@@ -144,8 +144,8 @@ function plotScatter(xs, ys, hands_pca, width, height) {
         .enter()
         .append('circle')
         .attr('id', (_, i) => 'circle-'+ i)
-        .attr('cx', d => x(d[0]) + "px")
-        .attr('cy', d => y(d[1]) + "px")
+        .attr('cx', d => x(d[0]) + 'px')
+        .attr('cy', d => y(d[1]) + 'px')
         .attr('r', '6px')
         .attr('class', 'circle')
         .on('mouseover', (_, i) => hoverCircle(i))
