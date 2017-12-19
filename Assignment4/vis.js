@@ -52,6 +52,12 @@ function init(hands, hands_pca) {
     plotScatter(hands_pca.map(val => val[0]),
         hands_pca.map(val => val[1]),
         svg2, svg2width, svg2height);
+
+    //Handler for the zoom
+    var zoomHandler = d3.zoom()
+        .on("zoom", function(){ svg.attr("transform", d3.event.transform) });
+
+    svg.call(zoomHandler);
 }
 
 function plotHand(hand, svg, width, height, i, pointMin, pointMax) {
