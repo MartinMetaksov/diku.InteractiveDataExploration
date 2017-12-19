@@ -22,11 +22,10 @@ body, html {
     display: inline-block;
     width: 49%;
     white-space: normal;
-    height: 300px;
 }
 
-.box-title {
-    height: 20px !important;
+.svg-box {
+    height: 300px;
 }
 
 .container {
