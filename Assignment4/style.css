@@ -25,6 +25,10 @@ body, html {
     height: 300px;
 }
 
+.box-title {
+    height: 20px !important;
+}
+
 .container {
     margin-left: 7%;
     margin-right: 7%;
@@ -38,7 +42,7 @@ svg {
 }
 
 .blurred {
-    opacity: 0.008;
+    opacity: 0.03;
 }
 
 .semi-blurred {

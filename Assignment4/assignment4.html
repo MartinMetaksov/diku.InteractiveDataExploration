@@ -21,11 +21,55 @@
     <div class="floating-box">
         <svg id="pca"></svg>
     </div>
+    <br>
+    <div class="floating-box box-title">
+        <h5>Vis. 1 - Hands</h5>
+    </div>
+    <div class="floating-box box-title">
+        <h5>Vis. 2 - PCA (2 dimensions)</h5>
+    </div>
 </div>
 <br>
 <div class="container">
-    <p> Some description here </p>
+    <p>
+        The first visualization represents all 40 rows of the dataset in all of its features - it is a drawing of a hand.
+        This means a total of 40 hands are displayed on top of each other. Since each hand has a slightly different position,
+        placing them on top of each other obviously does not give a good representation of the data. For this
+        reason, we have chosen to reduce the opacity of all hands at first and enable interactive features, through
+        Vis. 2, allowing to highlight a specific hand when hovering/clicking. Vis. 2 on the other hand is a scatter plot, consisting
+        of 40 points, representing the 1st and 2nd principal components of the same dataset (after PCA has been performed).
+    </p>
+    <p>
+        In many real-life scenarios, the data that we have to work with consists of a large number of features, often correlated.
+        PCA is a statistical method, which uses orthogonal transformations in order to reduce the dimensionality of the
+        data. This allows for more effective use of the data (e.g. training machine learning models quicker), without
+        losing too much information. In fact, features after the PCA are arranged by the amount of variance they describe,
+        meaning that the first 2 or 3 features will often explain a huge deal of the data (and 2D or 3D data can be easily
+        understood when visualized). This is obviously different for every data set, as it depends primarily on the correlation
+        between features in it.
+    </p>
+    <p>
+        In order to achieve meaningful interactivity, we have:
+        <ul>
+            <li>Reduced the opacity of the hands in Vis. 1 - this preserves the overview of all hands, while allowing for individual
+                hands to be highlighted</li>
+            <li>Increased the size of dots on Vis. 2 - allowing to easily highlight a dot and get more information about that point</li>
+            <li>Enabled hovering on each dot on Vis. 2 - this allows to preview each hand, slightly increasing its opacity, but still
+                keeping it semi-blurred, for smoother toggling between the dots</li>
+            <li>Enabled clicking on each dot on Vis. 2 - this allows to permanently highlight a hand on Vis. 1. We also highlight
+                the points on Vis. 2, which have been clicked before, in order to allow users to keep track of what has been
+                previously selected.</li>
+        </ul>
+    </p>
     <br>
+    <h1 class="centered">Individual parts</h1>
+    <br>
+    <span><b>Alex Lonchambon</b> - </span>
+    <br><br>
+    <span><b>Marek Hlava</b> - </span>
+    <br><br>
+    <span><b>Martin Metaksov</b> - display multiple hand-outlines and highlight the corresponding PCA-coordinates when one is selected</span>
+    <br><br>
 </div>
 </body>
 
