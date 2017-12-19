@@ -48,7 +48,6 @@
         understood when visualized). This is obviously different for every data set, as it depends primarily on the correlation
         between features in it.
     </p>
-    <p>
         In order to achieve meaningful interactivity, we have:
         <ul>
             <li>Reduced the opacity of the hands in Vis. 1 - this preserves the overview of all hands, while allowing for individual
@@ -60,6 +59,10 @@
                 the points on Vis. 2, which have been clicked before, in order to allow users to keep track of what has been
                 previously selected.</li>
         </ul>
+    <p>
+        To show the correctness of our PCA, we can compare outliers on the scatter plot; the hand for <a href="#" onclick="toggleCircleClick(30);">point 30</a>
+        on the left side looks much different compared to the hand for <a href="#" onclick="toggleCircleClick(35);">point 35</a> on the right side. We can also compare close points like
+        <a href="#" onclick="toggleCircleClick(19);">point 19</a> and <a href="#" onclick="toggleCircleClick(21);">point 21</a> and see the corresponding hands are very similar.
     </p>
     <br>
     <h1 class="centered">Individual parts</h1>
