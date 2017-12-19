@@ -57,15 +57,19 @@ svg {
     fill: lightblue;
 }
 
-.circle:hover {
+.circle-hovered {
     fill: green;
     cursor: pointer;
 }
 
-.clicked {
+.circle-clicked {
     fill: green;
 }
 
 p {
     text-align: justify;
+}
+
+.link {
+    cursor: pointer;
 }
