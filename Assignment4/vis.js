@@ -39,8 +39,6 @@ function init(hands, hands_pca) {
     const pointMin = d3.min(hands, hand => Math.min(...hand));
     const pointMax = d3.max(hands, hand => Math.max(...hand));
 
-    const handIndex = 0;
-
     const svg2Elem = document.getElementById('pca');
     const svg2 = d3.select('#pca');
     const svg2width = svg2Elem.clientWidth;
@@ -52,8 +50,8 @@ function init(hands, hands_pca) {
 
     // plotHand(getHandAt(hands, 1), svg, width / 2, width, height, pointMin, pointMax);
 
-    plotScatter(hands_pca.map(function(val, i) { return val[0] }),
-        hands_pca.map(function(val, i) { return val[1] }),
+    plotScatter(hands_pca.map(val => val[0]),
+        hands_pca.map(val => val[1]),
         svg2, svg2width, svg2height);
 }
 
@@ -119,10 +117,10 @@ function plotScatter(xs, ys, hands_pca, width, height) {
 
     const offset = 0.05;
 
-    const pointMinX = d3.min(xs, hand_pca => Math.min(...xs));
-    const pointMaxX = d3.max(xs, hand_pca => Math.max(...xs));
-    const pointMinY = d3.min(ys, hand_pca => Math.min(...ys));
-    const pointMaxY = d3.max(ys, hand_pca => Math.max(...ys));
+    const pointMinX = Math.min(...xs);
+    const pointMaxX = Math.max(...xs);
+    const pointMinY = Math.min(...ys);
+    const pointMaxY = Math.max(...ys);
 
     const x = d3.scaleLinear().rangeRound([0, width-50]);
     const y = d3.scaleLinear().rangeRound([height-30, 0]);
@@ -154,7 +152,9 @@ function plotScatter(xs, ys, hands_pca, width, height) {
         .on('mouseout', (_, i) => unhoverCircle(i))
         .on('click', (_, i) => toggleCircleClick(i))
         .append('svg:title')
-        .html(d =>
+        .html((d, i) =>
+            '<span>Index: ' + i + '</span>' +
+            '<br />' +
             '<span>x = ' + formatter(d[0]) + '</span>' +
             '<br />' +
             '<span>y = ' + formatter(d[1]) + '</span>'
