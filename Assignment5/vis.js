@@ -18,7 +18,7 @@ function init(data) {
         width = jq_map.width(),
         height = jq_map.height();
 
-    let svg = d3.select("#map");
+    let svg = d3.select('#map');
 
     let color = d3.scaleLinear()
         .domain([0, 9])
@@ -46,15 +46,38 @@ function init(data) {
     let t = [(width - s * (b[1][0] + b[0][0])) / 2, (height - s * (b[1][1] + b[0][1])) / 2];
     projection.scale(s).translate(t);
 
-    vector= svg.selectAll("path")
+    // draw tooltips (hidden by default)
+    d3.select('body')
         .data(plane.features)
         .enter()
-        .append("path")
-        .attr("class", "link")
-        .attr("id", (_, i) => "id-"+i)
-        .attr('data-toggle', 'tooltip')
-        .attr('title', (_, i) => 'District ' + i)
-        .attr("d", path)
-        .attr('fill', (_, i) => color(i));
+        .select('#tooltips-container')
+        .append('div')
+        .attr('id', (_, i) => 'district-tt-' + i)
+        .attr('class', 'abs-tooltip')
+        .html((_, i) => '<p>District ' + i + '</p>');
 
+    // draw regions
+    svg.selectAll('path')
+        .data(plane.features)
+        .enter()
+        .append('path')
+        .attr('class', 'link')
+        .attr('id', (_, i) => 'district-'+i)
+        .attr('d', path)
+        .attr('fill', (_, i) => color(i))
+        .on('mousemove', (_, i) => mousemoveDistrict(i))
+        .on('mouseout', (_, i) => mouseoutDistrict(i));
 }
+
+function mousemoveDistrict(i) {
+    let map = $('#map')[0],
+        tt = $('#district-tt-'+i);
+
+    tt.css({top: d3.mouse(map)[1] + tt.height() + 65 , left: d3.mouse(map)[0] + tt.width() + 25 })
+        .show();
+}
+
+function mouseoutDistrict(i) {
+    $('#district-tt-'+i).hide();
+}
+

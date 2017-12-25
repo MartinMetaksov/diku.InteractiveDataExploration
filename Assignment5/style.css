@@ -19,6 +19,26 @@ body {
     cursor: pointer;
 }
 
+.abs-tooltip {
+    font-family: monospace;
+    display: none;
+    cursor: pointer;
+    position: absolute;
+    min-width: 110px;
+    text-align: center;
+    vertical-align: middle;
+    border-radius: 3px;
+    border: 0;
+    background-color: rgba(0,0,0,0.8);
+    margin: auto;
+    color: white;
+    z-index: 999;
+    padding: 10px;
+}
+.abs-tooltip p {
+    margin: 0;
+}
+
 /* Assignment specific */
 
 #map {
