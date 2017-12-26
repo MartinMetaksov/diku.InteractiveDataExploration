@@ -29,3 +29,35 @@ body {
     width: 100%;
     min-height: 500px;
 }
+
+.clicked-district {
+    fill: grey;
+}
+
+.filter {
+    width: 100%;
+    height: 150px;
+}
+
+.filter-title {
+    font-size: 11px;
+    color: darkgray;
+}
+
+.cat-tick {
+    fill: none;
+    stroke: black;
+    stroke-width: 1px;
+}
+
+.toggleable:hover, .selected {
+    fill: black;
+}
+
+.active {
+    display: inline;
+}
+
+.inactive {
+    display: none;
+}
