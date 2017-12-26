@@ -31,14 +31,13 @@ function init(data) {
     */
     let projection = d3.geoMercator()
         .center([-122.433701, 37.767683])
-        // .scale(width / 2 / Math.PI)
         .scale(500)
         .translate([width / 2, height / 2]);
 
     let path = d3.geoPath()
         .projection(projection);
 
-    let plane = topojson.feature(data, data.objects.collection);  <!-- read data -->
+    let plane = topojson.feature(data, data.objects.collection);
 
     projection.scale(1).translate([0, 0]);
     let b = path.bounds(plane);
@@ -46,35 +45,49 @@ function init(data) {
     let t = [(width - s * (b[1][0] + b[0][0])) / 2, (height - s * (b[1][1] + b[0][1])) / 2];
     projection.scale(s).translate(t);
 
-    // draw tooltips (hidden by default)
-    d3.select('body')
+    let points = svg.selectAll('path')
         .data(plane.features)
-        .enter()
-        .select('#tooltips-container')
-        .append('div')
-        .attr('id', (_, i) => 'district-tt-' + i)
-        .attr('class', 'abs-tooltip')
-        .html((_, i) => '<p>District ' + i + '</p>');
+        .enter();
+
 
     // draw regions
-    svg.selectAll('path')
-        .data(plane.features)
-        .enter()
-        .append('path')
+    points.append('path')
         .attr('class', 'link')
         .attr('id', (_, i) => 'district-'+i)
         .attr('d', path)
         .attr('fill', (_, i) => color(i))
         .on('mousemove', (_, i) => mousemoveDistrict(i))
         .on('mouseout', (_, i) => mouseoutDistrict(i));
+
+    // draw tooltips (hidden by default)
+    // tooltips are drawn after the actual regions in order to display them
+    let tooltips = points.append('g')
+        .attr('id', (_, i) => 'district-tt-' + i)
+        .attr('class', 'abs-tooltip');
+
+
+    tooltips.append('rect')
+        .attr('width', '100')
+        .attr('height', '25')
+        .attr('rx', '5') // radius
+        .attr('ry', '5') // radius
+        .attr('fill', 'rgb(0,0,255,0.7)');
+
+    tooltips.append('text')
+        .attr('x', 21)
+        .attr('y', 18)
+        .attr('fill', 'white')
+        .attr('font-size', '14px')
+        .text((_, i) => 'District ' + i);
 }
 
 function mousemoveDistrict(i) {
     let map = $('#map')[0],
         tt = $('#district-tt-'+i);
 
-    tt.css({top: d3.mouse(map)[1] + tt.height() + 65 , left: d3.mouse(map)[0] + tt.width() + 25 })
-        .show();
+    tt.show();
+    d3.select('#district-tt-'+i)
+        .attr('transform', 'translate(' + (d3.mouse(map)[0] - 45) + ', ' + (d3.mouse(map)[1] + 20) + ')');
 }
 
 function mouseoutDistrict(i) {
