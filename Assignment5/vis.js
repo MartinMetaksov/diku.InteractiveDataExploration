@@ -1,5 +1,5 @@
 const cs = 11; // allowed char space in pixels
-let formatter = d3.format('0.2f');
+let formatter = d3.format('0.1f');
 let crime_dots;
 let selected_crimes = [];
 let selected_days = [];
@@ -121,7 +121,12 @@ function init(sfpd_map, sf_crime) {
         .text(d => jsUcfirst(d.properties.district));
 
     /*
-     * draw filters
+     * Write some statistics
+     */
+    updatePercentages();
+
+    /*
+     * Draw filters
      */
     let categories = groupCategories(sf_crime.features);
     drawCategoryFilter(categories);
@@ -228,6 +233,8 @@ function filter(d, i, cat_type) {
                 (selected_hours.length > 0 ? isInHourRange(dot.properties.Dates) : true);
         })
         .attr('class', 'active'); // set all but the filtered to inactive
+
+    updatePercentages(); // redraw it
 }
 
 function isInHourRange(datetime) {
@@ -240,4 +247,14 @@ function isInHourRange(datetime) {
         }
     }
     return false;
+}
+
+function getTotalCrimesPercentage() {
+    let shown = $('.active').length;
+    let total = crime_dots.size();
+    return total === 0 ? 0 : Math.round((shown/parseFloat(total))*100);
+}
+
+function updatePercentages() {
+    $('#totalCrime').text(getTotalCrimesPercentage());
 }
