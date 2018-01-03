@@ -195,6 +195,7 @@ function drawFilter(svg, width, height, cats, cat_type) {
 function filter(d, i, cat_type) {
     // set filter(s)
     let item;
+    let indexElement;
     if (cat_type !== 'district') {
          item = $('#' + cat_type + '-' + i);
         item.toggleClass('selected');
@@ -210,7 +211,13 @@ function filter(d, i, cat_type) {
             item.hasClass('selected') ? selected_hours.push(d) : selected_hours.pop(d);
             break;
         case 'district':
-            $('#district-'+i).hasClass('clicked-district') ? selected_districts.push(d) : selected_districts.pop(d);
+            if ($('#district-'+i).hasClass('clicked-district') == true) {
+                selected_districts.push(d);
+            }
+            else {
+                indexElement= selected_districts.indexOf(d);
+                selected_districts.splice(indexElement,1);
+            }
             break;
         default: throw new Error('Range error')
     }
