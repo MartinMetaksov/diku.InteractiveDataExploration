@@ -1,14 +1,10 @@
 const cs = 11; // allowed char space in pixels
-let formatter = d3.format('0.1f');
 let crime_dots;
 let selected_crimes = [];
 let selected_days = [];
 let selected_hours = [];
 let selected_districts = [];
 
-function zip(a, b) {
-    return a.map(function(e, i) { return [e, b[i]]; });
-}
 
 d3.select(window).on('load', loadData);
 
@@ -211,7 +207,7 @@ function filter(d, i, cat_type) {
             item.hasClass('selected') ? selected_hours.push(d) : selected_hours.pop(d);
             break;
         case 'district':
-            if ($('#district-'+i).hasClass('clicked-district') == true) {
+            if ($('#district-'+i).hasClass('clicked-district') === true) {
                 selected_districts.push(d);
             }
             else {
@@ -264,4 +260,8 @@ function getTotalCrimesPercentage() {
 
 function updatePercentages() {
     $('#totalCrime').text(getTotalCrimesPercentage());
+}
+
+function clickOnElements(ids) {
+    d3.selectAll(ids).dispatch('click');
 }
