@@ -67,3 +67,13 @@ body {
     color: darkgray;
     margin-top: 250px;
 }
+
+.long-div {
+    width: 100%;
+    height: 3000px;
+
+}
+
+.ufo-container {
+    position: fixed;
+}
