@@ -1,0 +1,69 @@
+/* General */
+.centered {
+    text-align: center;
+    align-content: center;
+    margin: 0 auto;
+    display: block;
+}
+
+body {
+    margin: 0;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    height: 100%;
+    width: 100%;
+}
+
+.link {
+    cursor: pointer;
+}
+
+.abs-tooltip {
+    display: none;
+    position: absolute;
+}
+/* Assignment specific */
+
+#map {
+    width: 100%;
+    min-height: 500px;
+}
+
+.clicked-district {
+    fill: grey;
+}
+
+.filter {
+    width: 100%;
+    height: 150px;
+}
+
+.filter-title {
+    font-size: 11px;
+    color: darkgray;
+}
+
+.cat-tick {
+    fill: none;
+    stroke: black;
+    stroke-width: 1px;
+}
+
+.toggleable:hover, .selected {
+    fill: black;
+}
+
+.active {
+    display: inline;
+}
+
+.inactive {
+    display: none;
+}
+
+.statistics {
+    font-size: 15px;
+    color: darkgray;
+    margin-top: 250px;
+}
