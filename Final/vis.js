@@ -1,23 +1,16 @@
 d3.select(window).on('load', init);
 
-$(document).ready(function() {
-    $(window).scroll($.debounce( 250, true, function(){
+$(document).ready(() => {
+    $(window).scroll($.debounce( 250, true, () => {
         $('#ufo-image').attr('src', 'ufos/ufo_flying.svg');
     }));
-    $(window).scroll($.debounce( 250, function(){
+    $(window).scroll($.debounce( 250, () => {
         $('#ufo-image').attr('src', 'ufos/ufo_abduct.svg');
     }));
 });
 
-/*function loadData() {
-     d3.json('data/sfpd_crime.topojson', (error, data) => {
-         if (error) throw error;
-         init(data);
-    });
-}*/
-
 function init() {
-   plotVisualizations('scrubbed');
+    plotVisualizations('scrubbed');
 }
 
 function plotVisualizations(db) {
@@ -39,26 +32,25 @@ function plotUfosByShape(data) {
 
     if (svg.empty()) return;
 
-    var counts = {};
+    let counts = {};
 
-    data.forEach(function (d) {
+    data.forEach(d => {
         if (!counts[d.shape]) {
             counts[d.shape] = 0;
         }
         counts[d.shape]++;
     });
 
-    var dataObj = [];
+    let dataObj = [];
 
-    Object.keys(counts).forEach(function(key) {
+    Object.keys(counts).forEach(key => {
         dataObj.push({
             shape: key,
             count: counts[key]
         });
     });
 
-    dataObj.forEach(function (d) {
-        d.shape = d.shape;
+    dataObj.forEach(d => {
         d.count = +d.count;
     });
 
@@ -70,10 +62,10 @@ function plotUfosByShape(data) {
         .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 
     let x = d3.scaleBand().rangeRound([0, width]).padding(0.1)
-        .domain(dataObj.map(function(d) { return d.shape; }));
+        .domain(dataObj.map(d => d.shape));
 
     let y = d3.scaleLinear().rangeRound([height, 0])
-        .domain([0, d3.max(dataObj, function(d) { return d.count; })]).nice();
+        .domain([0, d3.max(dataObj, d => d.count)]).nice();
 
     let xAxis = d3.axisBottom(x)
         .ticks(d3.datetime);
@@ -81,15 +73,14 @@ function plotUfosByShape(data) {
     let yAxis = d3.axisRight(y)
         .tickSize(width)
         .tickFormat(function(d) {
-            var s = d
             return this.parentNode.nextSibling
-                ? "\xa0" + s
-                :  s + " count";
+                ? "\xa0" + d
+                :  d + " count";
         });
 
     function customXAxis(g) {
         g.call(xAxis);
-        g.select(".domain").remove()
+        g.select(".domain").remove();
         g.selectAll(".tick text").attr('transform', 'rotate(-80)').attr('y',6).attr('dy', '-0.1em').attr('dx', '-3.0em');
     }
 
@@ -113,19 +104,19 @@ function plotUfosByShape(data) {
         .data(dataObj)
         .enter().append("rect")
         .attr('class', 'bar')
-        .attr("x", function(d) { return x(d.shape); })
-        .attr("y", function(d) { return y(d.count); })
+        .attr("x", d => x(d.shape))
+        .attr("y", d => y(d.count))
         .attr("width", x.bandwidth())
-        .attr("height", function(d) { return height - y(d.count); })
-        .on("mousemove", function(d){
+        .attr("height", d => height - y(d.count))
+        .on("mousemove", d => {
             tooltip
                 .style("left", d3.event.pageX - 50 + "px")
                 .style("top", d3.event.pageY - 70 + "px")
                 .style("display", "inline-block")
                 .html((d.shape) + "<br>" + (d.count) + " UFOs");
         })
-        .on("mouseout", function(d){ tooltip.style("display", "none");})
-        .style("fill",function(d,i){return colors(i)});
+        .on("mouseout", () => { tooltip.style("display", "none");})
+        .style("fill", (d, i) => colors(i));
 }
 
 function plotUfosByState(data) {
@@ -133,25 +124,25 @@ function plotUfosByState(data) {
 
     if (svg.empty()) return;
 
-    var counts = {};
+    let counts = {};
 
-    data.forEach(function (d) {
+    data.forEach(d => {
         if (!counts[d.state]) {
             counts[d.state] = 0;
         }
         counts[d.state]++;
     });
 
-    var dataObj = [];
+    let dataObj = [];
 
-    Object.keys(counts).forEach(function(key) {
+    Object.keys(counts).forEach(key => {
         dataObj.push({
             state: key,
             count: counts[key]
         });
     });
 
-    dataObj.forEach(function (d) {
+    dataObj.forEach(d => {
         d.state = d.state.toUpperCase();
         d.count = +d.count;
     });
@@ -164,10 +155,10 @@ function plotUfosByState(data) {
         .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 
     let x = d3.scaleBand().rangeRound([0, width]).padding(0.1)
-        .domain(dataObj.map(function(d) { return (d.state); }));
+        .domain(dataObj.map(d => (d.state)));
 
     let y = d3.scaleLinear().rangeRound([height, 0])
-        .domain([0, d3.max(dataObj, function(d) { return d.count; })]).nice();
+        .domain([0, d3.max(dataObj, d => d.count)]).nice();
 
     let xAxis = d3.axisBottom(x)
         .ticks(d3.datetime);
@@ -175,15 +166,14 @@ function plotUfosByState(data) {
     let yAxis = d3.axisRight(y)
         .tickSize(width)
         .tickFormat(function(d) {
-            var s = d
             return this.parentNode.nextSibling
-                ? "\xa0" + s
-                :  s + " count";
+                ? "\xa0" + d
+                :  d + " count";
         });
 
     function customXAxis(g) {
         g.call(xAxis);
-        g.select(".domain").remove()
+        g.select(".domain").remove();
         g.selectAll(".tick text").attr('transform', 'rotate(-90)').attr('y',6).attr('dy', '-0.1em').attr('dx', '-1.5em');
     }
 
@@ -207,11 +197,11 @@ function plotUfosByState(data) {
         .data(dataObj)
         .enter().append("rect")
         .attr('class', 'bar')
-        .attr("x", function(d) { return x(d.state); })
-        .attr("y", function(d) { return y(d.count); })
+        .attr("x", d => x(d.state))
+        .attr("y", d => y(d.count))
         .attr("width", x.bandwidth())
-        .attr("height", function(d) { return height - y(d.count); })
-        .style("fill",function(d,i){return colors(i)});
+        .attr("height", d => height - y(d.count))
+        .style("fill", (d, i) => colors(i));
 }
 
 function plotUfosByYear(data) {
@@ -219,9 +209,9 @@ function plotUfosByYear(data) {
 
     if (svg.empty()) return;
 
-    var counts = {};
+    let counts = {};
 
-    data.forEach(function (d) {
+    data.forEach(d => {
         d.datetime = new Date(d.datetime).getFullYear();
 
         if (!counts[d.datetime]) {
@@ -230,16 +220,16 @@ function plotUfosByYear(data) {
         counts[d.datetime]++;
     });
 
-    var dataObj = [];
+    let dataObj = [];
 
-    Object.keys(counts).forEach(function(key) {
+    Object.keys(counts).forEach(key => {
         dataObj.push({
             datetime: key,
             count: counts[key]
         });
     });
 
-    dataObj.forEach(function (d) {
+    dataObj.forEach(d => {
         d.count = +d.count;
     });
 
@@ -252,10 +242,10 @@ function plotUfosByYear(data) {
         .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 
     let x = d3.scaleBand().rangeRound([0, width]).padding(0.1)
-        .domain(dataObj.map(function(d) { return d.datetime; }));
+        .domain(dataObj.map(d => d.datetime));
 
     let y = d3.scaleLinear().rangeRound([height, 0])
-        .domain([0, d3.max(dataObj, function(d) { return d.count; })]).nice();
+        .domain([0, d3.max(dataObj, d => d.count)]).nice();
 
     let xAxis = d3.axisBottom(x)
         .ticks(d3.datetime);
@@ -263,15 +253,14 @@ function plotUfosByYear(data) {
     let yAxis = d3.axisRight(y)
         .tickSize(width)
         .tickFormat(function(d) {
-            var s = d
             return this.parentNode.nextSibling
-                ? "\xa0" + s
-                :  s + " count";
+                ? "\xa0" + d
+                :  d + " count";
         });
 
     function customXAxis(g) {
         g.call(xAxis);
-        g.select(".domain").remove()
+        g.select(".domain").remove();
         g.selectAll(".tick text").attr('transform', 'rotate(-80)').attr('y',6).attr('dy', '-0.1em').attr('dx', '-2.0em');
     }
 
@@ -289,14 +278,12 @@ function plotUfosByYear(data) {
     g.append("g")
         .call(customYAxis);
 
-    let colors = d3.scaleOrdinal(d3.schemeCategory10);
-
     g.selectAll(".bar")
         .data(dataObj)
         .enter().append("rect")
         .attr('class', 'bar')
-        .attr("x", function(d) { return x(d.datetime); })
-        .attr("y", function(d) { return y(d.count); })
+        .attr("x", d => x(d.datetime))
+        .attr("y", d => y(d.count))
         .attr("width", x.bandwidth())
-        .attr("height", function(d) { return height - y(d.count); })
+        .attr("height", d => height - y(d.count))
 }

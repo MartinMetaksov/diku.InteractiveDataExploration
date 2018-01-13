@@ -76,6 +76,7 @@ body {
 
 .ufo-container {
     position: fixed;
+    left: 100px;
 }
 
 /*Axis*/
