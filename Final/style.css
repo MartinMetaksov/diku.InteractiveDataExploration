@@ -111,9 +111,14 @@ body {
 }
 
 /* MAP */
+.country {
+    stroke: #000000;
+    stroke-width: .5px;
+    fill: #a1d99b;
+}
+
 .country:hover {
-    stroke: #fff;
-    stroke-width: 2px;
+    fill: #31a354;
 }
 
 .text {
@@ -130,7 +135,7 @@ body {
     background: #F0F8FF;
 }
 
-.hidden {
+div.hidden {
     display: none;
 }
 
@@ -144,16 +149,4 @@ div.tooltip {
     opacity: 0.9;
     position: absolute;
     user-select: none;
-}
-
-.graticule {
-    fill: none;
-    stroke: #bbb;
-    stroke-width: 1px;
-    stroke-opacity: .5;
-}
-
-.equator {
-    stroke: #ccc;
-    stroke-width: 1px;
 }

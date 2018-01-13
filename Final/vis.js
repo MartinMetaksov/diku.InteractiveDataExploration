@@ -288,7 +288,6 @@ function initMap() {
     d3.select(window).on('resize', throttle);
 
     let zoom = d3.zoom()
-    //.extent([1,9])
         .scaleExtent([1, 9])
         .on('zoom', move);
 
@@ -301,9 +300,6 @@ function initMap() {
     let offsetT = c.offsetTop + 10;
 
     let topo, projection, path, svg, g;
-
-    //let graticule = d3.geo.graticule();
-    let graticule = d3.geoGraticule();
 
     let tooltip = d3.select('#map-container').append('div').attr('class', 'tooltip hidden');
 
@@ -321,12 +317,13 @@ function initMap() {
         svg = d3.select('#map-container').append('svg')
             .attr('width', width)
             .attr('height', height)
-            .call(zoom)
-            //.on('click', click)
-            .append('g');
+            .call(zoom);
 
         g = svg.append('g')
             .on('click', click);
+
+        // Initial zoom
+        zoom.translateBy(svg, 0, 60);
 
     }
 
@@ -353,17 +350,6 @@ function initMap() {
 
     function draw(topo) {
 
-        svg.append('path')
-            .datum(graticule)
-            .attr('class', 'graticule')
-            .attr('d', path);
-
-
-        g.append('path')
-            .datum({type: 'LineString', coordinates: [[-180, 0], [-90, 0], [0, 0], [90, 0], [180, 0]]})
-            .attr('class', 'equator')
-            .attr('d', path);
-
 
         let country = g.selectAll('.country').data(topo);
 
@@ -372,37 +358,8 @@ function initMap() {
             .attr('d', path)
             .attr('id', d => d.id)
             .attr('title', d => d.properties.name)
-            .style('fill', d => d.properties.color)
             .on('mouseover', handleMouseOver)
             .on('mouseout', handleMouseOut);
-
-
-        //tooltips
-        /*
-        d3.select('#map-container svg path')
-          .on('mousemove', function(d,i) {
-      console.log(d);
-            let mouse = d3.mouse(svg.node()).map( function(d) { return parseInt(d); } );
-
-            tooltip.classed('hidden', false)
-                   .attr('style', 'left:'+(mouse[0]+offsetL)+'px;top:'+(mouse[1]+offsetT)+'px')
-                   .html(d.properties.name);
-
-            })
-            .on('mouseout',  function(d,i) {
-              tooltip.classed('hidden', true);
-            });
-      */
-
-        //EXAMPLE: adding some capitals from external CSV file
-        d3.csv('data/country-capitals.csv', (err, capitals) => {
-
-            capitals.forEach(i => {
-                addpoint(i.CapitalLongitude, i.CapitalLatitude, i.CapitalName);
-            });
-
-        });
-
     }
 
 
@@ -417,9 +374,8 @@ function initMap() {
 
     function move() {
 
-        //let t = d3.event.translate;
         let t = [d3.event.transform.x, d3.event.transform.y];
-        //let s = d3.event.scale;
+
         let s = d3.event.transform.k;
         zscale = s;
         let h = height / 4;
@@ -434,11 +390,10 @@ function initMap() {
             Math.max(height * (1 - s) - h * s, t[1])
         );
 
-        //zoom.translateBy(t);
         g.attr('transform', 'translate(' + t + ')scale(' + s + ')');
 
         //adjust the country hover stroke width based on zoom level
-        d3.selectAll('.country').style('stroke-width', 1.5 / s);
+        d3.selectAll('.country').style('stroke-width', .5 / s);
 
     }
 
