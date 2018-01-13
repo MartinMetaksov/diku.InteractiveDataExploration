@@ -1,14 +1,5 @@
 d3.select(window).on('load', init);
 
-$(document).ready(() => {
-    $(window).scroll($.debounce(250, true, () => {
-        $('#ufo-image').attr('src', 'ufos/ufo_flying.svg');
-    }));
-    $(window).scroll($.debounce(250, () => {
-        $('#ufo-image').attr('src', 'ufos/ufo_abduct.svg');
-    }));
-});
-
 function init() {
     plotVisualizations('scrubbed');
     initMap();
