@@ -299,32 +299,26 @@ function initMap() {
     let offsetL = c.offsetLeft + 20;
     let offsetT = c.offsetTop + 10;
 
-    let topo, projection, path, svg, g;
+    let topo, projection, path, svg, g, centerTransform;
 
     let tooltip = d3.select('#map-container').append('div').attr('class', 'tooltip hidden');
 
     setup(width, height);
 
     function setup(width, height) {
-        //projection = d3.geo.mercator()
         projection = d3.geoMercator()
             .translate([(width / 2), (height / 2)])
             .scale(width / 2 / Math.PI);
 
-        //path = d3.geo.path().projection(projection);
         path = d3.geoPath().projection(projection);
 
         svg = d3.select('#map-container').append('svg')
             .attr('width', width)
             .attr('height', height)
-            .call(zoom);
+            .call(zoom)
+            .on('dblclick.zoom', null);
 
-        g = svg.append('g')
-            .on('click', click);
-
-        // Initial zoom
-        zoom.translateBy(svg, 0, 60);
-
+        g = svg.append('g');
     }
 
     d3.json('data/world-topo-min.json', (error, world) => {
@@ -350,7 +344,6 @@ function initMap() {
 
     function draw(topo) {
 
-
         let country = g.selectAll('.country').data(topo);
 
         country.enter().insert('path')
@@ -359,7 +352,19 @@ function initMap() {
             .attr('id', d => d.id)
             .attr('title', d => d.properties.name)
             .on('mouseover', handleMouseOver)
-            .on('mouseout', handleMouseOut);
+            .on('mouseout', handleMouseOut)
+            .on('click', clicked);
+
+        // Center the map (Chad works fine)
+        let chad = topo.find(d => d.id === 213),
+            bounds = path.bounds(chad),
+            x = (bounds[0][0] + bounds[1][0]) / 2,
+            y = (bounds[0][1] + bounds[1][1]) / 2,
+            translate = [width / 2 - x, height / 2 - y];
+
+        centerTransform = d3.zoomIdentity.translate(translate[0],translate[1]).scale(1);
+
+        svg.transition().call(zoom.transform, centerTransform);
     }
 
 
@@ -407,10 +412,35 @@ function initMap() {
     }
 
 
-    //geo translation on mouse click in map
-    function click() {
-        let latlon = projection.invert(d3.mouse(this));
-        console.log(latlon);
+    // Country zoom and center
+    // source: https://bl.ocks.org/iamkevinv/0a24e9126cd2fa6b283c6f2d774b69a2
+    let active = d3.select(null);
+
+    function clicked(d) {
+        if (active.node() === this) return reset();
+        active.classed('active', false);
+        active = d3.select(this).classed('active', true);
+
+        let bounds = path.bounds(d),
+            dx = bounds[1][0] - bounds[0][0],
+            dy = bounds[1][1] - bounds[0][1],
+            x = (bounds[0][0] + bounds[1][0]) / 2,
+            y = (bounds[0][1] + bounds[1][1]) / 2,
+            scale = Math.max(1, Math.min(8, 0.9 / Math.max(dx / width, dy / height))),
+            translate = [width / 2 - scale * x, height / 2 - scale * y];
+
+        svg.transition()
+            .duration(750)
+            .call(zoom.transform, d3.zoomIdentity.translate(translate[0],translate[1]).scale(scale));
+    }
+
+    function reset() {
+        active.classed('active', false);
+        active = d3.select(null);
+
+        svg.transition()
+            .duration(750)
+            .call(zoom.transform, centerTransform);
     }
 
 
