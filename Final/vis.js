@@ -10,7 +10,7 @@ function plotVisualizations(db) {
         'data/' + db + '.csv',
         (error, data) => {
             if (error) throw error;
-
+            let x = crossfilter(data); // crossfilter - when data sizes are huge - http://square.github.io/crossfilter/
             initMap(data);
             plotUfosByShape(data);
             plotUfosByState(data);
@@ -396,7 +396,7 @@ function initMap(data) {
 
         svg.transition().call(zoom.transform, centerTransform);
 
-        addPoints(data);
+        addPoints(data.slice(0, 100));
     }
 
     function redraw() {
@@ -473,7 +473,6 @@ function initMap(data) {
             .call(zoom.transform, centerTransform);
     }
 
-
     //function to add points and text to the map (used in plotting capitals)
     function addPoints(data) {
         /*
@@ -481,25 +480,105 @@ function initMap(data) {
          */
         let clearData = data.filter(d => !isNaN(d.latitude) && !isNaN(d.longitude));
 
+        g.selectAll('.gpoint').remove();
         g.selectAll('g')
-            .data(clearData).enter()
+            .data(clearData)
+            .enter()
             .append('g').attr('class', 'gpoint')
             .append('svg:circle')
             .attr('cx', d => projection([d.longitude, d.latitude])[0])
             .attr('cy', d => projection([d.longitude, d.latitude])[1])
-            .attr('class', 'point')
+            // .attr('class', 'point')
             .style('fill', d => d.shape === "" ? shapeColor(shapes.indexOf("unknown")) : shapeColor(shapes.indexOf(d.shape)))
-            .attr('r', .3);
-
-
-        // let x = projection([lon, lat])[0];
-        // let y = projection([lon, lat])[1];
-        //
-        // gpoint.append('svg:circle')
-        //     .attr('cx', x)
-        //     .attr('cy', y)
-        //     .attr('class', 'point')
-        //     .attr('r', 3);
+            .attr('r', 1);
     }
 
 }
+
+/*
+ * Timeline related functions
+ */
+
+function getBarWidthInPerc(bar) {
+    return $(bar).width() / $(bar).parent().width() * 100;
+}
+
+let interval;
+
+// distance must be in %
+function setProgressBar(distance) {
+    $('.timeline-progress').width(distance + '%'); // todo: for now increase with 1% every second, but fix that later
+    $('.progress-indicator').css({paddingLeft: distance + '%'});
+}
+
+function play() {
+    $('.play-pause-icon').attr('src', 'img/pause.svg');
+    let bar = $('.timeline-progress')[0];
+    let cWidth = getBarWidthInPerc(bar);
+
+    interval = setInterval(function() {
+        // todo: properly increase the percentage instead of using 10
+        cWidth += 1;
+        if (cWidth >= 100) {
+            cWidth = 100;
+        }
+        // todo: call function for toggling the data points
+        setProgressBar(cWidth);
+        if (cWidth === 100) {
+            $('.play-pause-icon').attr('src', 'img/play.svg');
+            clearInterval(interval);
+            interval = undefined;
+        }
+    }, 50)
+}
+
+
+function pause() {
+    $('.play-pause-icon').attr('src', 'img/play.svg');
+    if (interval) {
+        clearInterval(interval);
+        interval = undefined;
+    }
+}
+
+$(document).ready(function() {
+    $('.play-pause-icon').on('click', function() {
+        if ($(this).attr('src').includes('play')) {
+            play();
+        } else {
+            pause();
+        }
+    });
+
+    let tlHover = $('.tl-hover');
+    tlHover.on('mousemove', function(e) {
+        let t = $('.timeline'),
+            mouse = e.pageX - t.offset().left,
+            p = t.parent().width(),
+            m = mouse / p * 100;
+        $('.timeline-progress-hover').show().css({marginLeft: m + '%'});
+    });
+
+    tlHover.on('mouseleave', function() {
+        $('.timeline-progress-hover').hide();
+    });
+
+    tlHover.on('click', function(e) {
+        let t = $('.timeline'),
+            mouse = e.pageX - t.offset().left,
+            p = t.parent().width(),
+            m = mouse / p * 100,
+            playing = $('.play-pause-icon').attr('src').includes('pause');
+        pause();
+        setProgressBar(m);
+        if (playing) {
+            play();
+        }
+    });
+
+    $(document).keypress(function(e) {
+        if (e.which === 115) {
+            $('.play-pause-icon').click();
+        }
+    });
+});

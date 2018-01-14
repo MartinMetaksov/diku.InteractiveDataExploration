@@ -8,6 +8,7 @@
 
     <link rel="stylesheet" type="text/css" href="style.css">
     <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crossfilter/1.3.12/crossfilter.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://d3js.org/d3.v4.min.js"></script>
     <script src="https://d3js.org/topojson.v1.min.js"></script> <!--  need add this to read topojson format -->
@@ -28,6 +29,24 @@
         <div class="col-md-2">
             <svg id="map-legend"></svg>
         </div>
+    </div>
+    <div class="row">
+        <div class="col-md-1 centered">Start date</div>
+        <div class="col-md-8 centered">
+            <div class="row">
+                <div class="col-md-1">
+                    <img class="play-pause-icon link" src="img/play.svg"/>
+                </div>
+                <div class="col-md-11">
+                    <div class="timeline tl-hover link"></div>
+                    <div class="timeline-progress tl-hover link"></div>
+                    <div class="timeline-progress-hover tl-hover link"></div>
+                    <div class="progress-indicator">9/9/2013</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-1 centered">End date</div>
+        <div class="col-md-2"></div>
     </div>
     <br>
     <div class="row">
