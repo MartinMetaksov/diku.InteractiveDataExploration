@@ -17,14 +17,29 @@
 <body>
 <div class="container">
     <h2 class="centered">Final Project - UFO Sightings</h2>
-
-    <div id="map-container"></div>
-    <h2 class = "centered">UFOs by shape</h2>
-    <svg id = "plot-1" class ="centered" width="960" height="500"></svg>
-    <h2 class = "centered">UFOs by state</h2>
-    <svg id = "plot-2" class ="centered" width="960" height="500"></svg>
-    <h2 class = "centered">UFOs by year</h2>
-    <svg id = "plot-3" class ="centered" width="960" height="500"></svg>
+    <div class="row">
+        <div class="col-md-11">
+            <div id="map-container"></div>
+        </div>
+        <div class="col-md-1">
+            <svg id="map-legend"></svg>
+        </div>
+    </div>
+    <br>
+    <div class="row">
+        <h2 class = "centered">UFOs by shape</h2>
+        <svg id = "plot-1" class ="centered" width="960" height="500"></svg>
+    </div>
+    <br>
+    <div class="row">
+        <h2 class = "centered">UFOs by state</h2>
+        <svg id = "plot-2" class ="centered" width="960" height="500"></svg>
+    </div>
+    <br>
+    <div class="row">
+        <h2 class = "centered">UFOs by year</h2>
+        <svg id = "plot-3" class ="centered" width="960" height="500"></svg>
+    </div>
 </div>
 
 

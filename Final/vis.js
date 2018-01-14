@@ -2,7 +2,6 @@ d3.select(window).on('load', init);
 
 function init() {
     plotVisualizations('scrubbed');
-    initMap();
 }
 
 function plotVisualizations(db) {
@@ -12,6 +11,7 @@ function plotVisualizations(db) {
         (error, data) => {
             if (error) throw error;
 
+            initMap(data);
             plotUfosByShape(data);
             plotUfosByState(data);
             plotUfosByYear(data);
@@ -283,9 +283,15 @@ function plotUfosByYear(data) {
 }
 
 // Source: http://techslides.com/d3-map-starter-kit
-function initMap() {
+function initMap(data) {
 
     d3.select(window).on('resize', throttle);
+
+    let shapes = getUniqueShapes(data);
+
+    let shapeColor = d3.scaleOrdinal(d3.schemeCategory20c);
+
+    drawMapLegend();
 
     let zoom = d3.zoom()
         .scaleExtent([1, 9])
@@ -304,6 +310,31 @@ function initMap() {
     let tooltip = d3.select('#map-container').append('div').attr('class', 'tooltip hidden');
 
     setup(width, height);
+
+    function getUniqueShapes(data) {
+        let x = Array.from(new Set(data.map(d => d.shape)));
+        x.splice(x.indexOf(""), 1);
+        return x;
+    }
+
+    function drawMapLegend() {
+        let g = d3.select('#map-legend')
+            .attr('height', 500);
+        let dg = g.selectAll('circle')
+            .data(shapes).enter();
+
+        dg.append('circle')
+            .attr('cx', (_, i) => i%2 === 0 ? 170 : 20)
+            .attr('cy', (_, i) => i%2 === 0 ? 15 * (i-1) + 10 : 15 * i + 10)
+            .attr('r', 5)
+            .style('fill', (_, i) => shapeColor(i));
+
+        dg.append('text')
+            .attr('class', 'map-legend-text')
+            .attr('x', (_, i) => i%2 === 0 ? 180 : 30)
+            .attr('y', (_, i) => i%2 === 0 ? 15 * (i-1) + 13 : 15 * i + 13)
+            .text(d => d);
+    }
 
     function setup(width, height) {
         projection = d3.geoMercator()
@@ -341,7 +372,6 @@ function initMap() {
         tooltip.classed('hidden', true);
     }
 
-
     function draw(topo) {
 
         let country = g.selectAll('.country').data(topo);
@@ -365,8 +395,9 @@ function initMap() {
         centerTransform = d3.zoomIdentity.translate(translate[0],translate[1]).scale(1);
 
         svg.transition().call(zoom.transform, centerTransform);
-    }
 
+        addPoints(data);
+    }
 
     function redraw() {
         width = c.offsetWidth;
@@ -375,7 +406,6 @@ function initMap() {
         setup(width, height);
         draw(topo);
     }
-
 
     function move() {
 
@@ -445,27 +475,31 @@ function initMap() {
 
 
     //function to add points and text to the map (used in plotting capitals)
-    function addpoint(lon, lat, text) {
+    function addPoints(data) {
+        /*
+        We have noticed that some of the data has its shape and duration (hours,min)
+         */
+        let clearData = data.filter(d => !isNaN(d.latitude) && !isNaN(d.longitude));
 
-        let gpoint = g.append('g').attr('class', 'gpoint');
-        let x = projection([lon, lat])[0];
-        let y = projection([lon, lat])[1];
-
-        gpoint.append('svg:circle')
-            .attr('cx', x)
-            .attr('cy', y)
+        g.selectAll('g')
+            .data(clearData).enter()
+            .append('g').attr('class', 'gpoint')
+            .append('svg:circle')
+            .attr('cx', d => projection([d.longitude, d.latitude])[0])
+            .attr('cy', d => projection([d.longitude, d.latitude])[1])
             .attr('class', 'point')
-            .attr('r', 1.5);
+            .style('fill', d => d.shape === "" ? shapeColor(shapes.indexOf("unknown")) : shapeColor(shapes.indexOf(d.shape)))
+            .attr('r', .3);
 
-        //conditional in case a point has no associated text
-        if (text.length > 0) {
 
-            gpoint.append('text')
-                .attr('x', x + 2)
-                .attr('y', y + 2)
-                .attr('class', 'text')
-                .text(text);
-        }
-
+        // let x = projection([lon, lat])[0];
+        // let y = projection([lon, lat])[1];
+        //
+        // gpoint.append('svg:circle')
+        //     .attr('cx', x)
+        //     .attr('cy', y)
+        //     .attr('class', 'point')
+        //     .attr('r', 3);
     }
+
 }
