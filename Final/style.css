@@ -226,3 +226,22 @@ div.tooltip {
     width: auto;
     margin-left: 20px;
 }
+
+.date {
+    height: 25px !important;
+    width: 50px;
+}
+
+.date > .form-control {
+    font-size: 11px !important;
+    padding: 8px !important;
+}
+
+.input-group-addon {
+    padding: 5px !important;
+}
+
+.fa {
+    font-size: 11px !important;
+    padding: 0 !important;
+}

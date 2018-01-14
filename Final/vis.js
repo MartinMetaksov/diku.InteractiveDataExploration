@@ -582,3 +582,15 @@ $(document).ready(function() {
         }
     });
 });
+
+$(function () {
+    $('#dtpicker-start').datetimepicker({
+        viewMode: 'years',
+        format: 'MM/YYYY'
+    });
+
+    $('#dtpicker-end').datetimepicker({
+        viewMode: 'years',
+        format: 'MM/YYYY'
+    });
+});
