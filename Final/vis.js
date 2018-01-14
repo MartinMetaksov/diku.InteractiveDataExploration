@@ -1,5 +1,8 @@
 d3.select(window).on('load', init);
 
+let startDate,
+    endDate;
+
 function init() {
     plotVisualizations('scrubbed');
 }
@@ -541,8 +544,16 @@ function pause() {
     }
 }
 
+function validateDates() {
+    return startDate && endDate;
+}
+
 $(document).ready(function() {
     $('.play-pause-icon').on('click', function() {
+        if (!validateDates()) {
+            alert('You need to choose both a start and an end date');
+            return;
+        }
         if ($(this).attr('src').includes('play')) {
             play();
         } else {
@@ -564,6 +575,10 @@ $(document).ready(function() {
     });
 
     tlHover.on('click', function(e) {
+        if (!validateDates()) {
+            alert('You need to choose both a start and an end date');
+            return;
+        }
         let t = $('.timeline'),
             mouse = e.pageX - t.offset().left,
             p = t.parent().width(),
@@ -581,16 +596,21 @@ $(document).ready(function() {
             $('.play-pause-icon').click();
         }
     });
-});
 
-$(function () {
-    $('#dtpicker-start').datetimepicker({
+    $('#dtpicker-start, #dtpicker-end').datetimepicker({
         viewMode: 'years',
-        format: 'MM/YYYY'
+        format: 'DD/MM/YYYY',
+        minDate: '1940/01/01',
+        maxDate: '2018/01/30'
     });
 
-    $('#dtpicker-end').datetimepicker({
-        viewMode: 'years',
-        format: 'MM/YYYY'
+    $('#dtpicker-start').on('dp.change', function(e) {
+        $('#dtpicker-end').data("DateTimePicker").minDate(e.date.clone().add(1, 'days'));
+        $('#dtpicker-end').data("DateTimePicker").maxDate(e.date.clone().add(1, 'years'));
+        startDate = e.date;
+    });
+
+    $('#dtpicker-end').on('dp.change', function(e) {
+        endDate = e.date;
     });
 });
