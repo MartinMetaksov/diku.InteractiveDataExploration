@@ -324,14 +324,14 @@ function initMap(data) {
             .data(shapes).enter();
 
         dg.append('circle')
-            .attr('cx', (_, i) => i%2 === 0 ? 170 : 20)
+            .attr('cx', (_, i) => i%2 === 0 ? 100 : 10)
             .attr('cy', (_, i) => i%2 === 0 ? 15 * (i-1) + 10 : 15 * i + 10)
             .attr('r', 5)
             .style('fill', (_, i) => shapeColor(i));
 
         dg.append('text')
             .attr('class', 'map-legend-text')
-            .attr('x', (_, i) => i%2 === 0 ? 180 : 30)
+            .attr('x', (_, i) => i%2 === 0 ? 110 : 20)
             .attr('y', (_, i) => i%2 === 0 ? 15 * (i-1) + 13 : 15 * i + 13)
             .text(d => d);
     }
