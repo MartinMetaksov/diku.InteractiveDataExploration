@@ -1,0 +1,257 @@
+/* General */
+.centered {
+    text-align: center;
+    align-content: center;
+    margin: 0 auto;
+    display: block;
+}
+
+body {
+    margin: 0;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    height: 100%;
+    width: 100%;
+}
+
+.link {
+    cursor: pointer;
+}
+
+.abs-tooltip {
+    display: none;
+    position: absolute;
+}
+
+/* Assignment specific */
+
+#map {
+    width: 100%;
+    min-height: 500px;
+}
+
+.clicked-district {
+    fill: grey;
+}
+
+.filter {
+    width: 100%;
+    height: 150px;
+}
+
+.filter-title {
+    font-size: 11px;
+    color: darkgray;
+}
+
+.cat-tick {
+    fill: none;
+    stroke: black;
+    stroke-width: 1px;
+}
+
+.toggleable:hover, .selected {
+    fill: black;
+}
+
+.active {
+    display: inline;
+}
+
+.inactive {
+    display: none;
+}
+
+.statistics {
+    font-size: 15px;
+    color: darkgray;
+    margin-top: 250px;
+}
+
+.ufo-container {
+    position: fixed;
+    left: 100px;
+}
+
+/*Axis*/
+
+.axis {
+    font: 10px cursive;
+}
+
+.axis path,
+.axis line {
+    fill: none;
+    stroke: #000;
+    shape-rendering: crispEdges;
+    stroke-width: 2px;
+}
+
+/*Bar - not use for now*/
+
+.bar {
+    fill: steelblue;
+}
+
+.bar:hover {
+    fill: darkblue;
+}
+
+.toolTip {
+    position: absolute;
+    display: none;
+    min-width: 80px;
+    height: auto;
+    background: repeat scroll 0 0 rgba(0, 0, 0, 0.4);
+    border-radius: 25px;
+    padding: 10px;
+    text-align: center;
+    -webkit-text-fill-color: white;
+}
+
+/*RADIO*/
+#radio {
+    text-align: left;
+    font: 20px Dubai;
+}
+
+.row-left {
+    text-align: center;
+}
+
+/* MAP */
+.country {
+    stroke: #ffffff;
+    stroke-width: .5px;
+    fill: #74c476;
+}
+
+.country:hover, .country.active {
+    fill: #006d2c;
+}
+
+.text {
+    font-size: 10px;
+    text-transform: capitalize;
+}
+
+#map-container {
+    margin: 10px 0;
+    border: 2px solid #000;
+    border-radius: 5px;
+    overflow: hidden;
+    background: #ffffff;
+    display: flex;
+    flex-direction: column;
+}
+
+#map-container > svg {
+    flex-grow: 1;
+}
+
+div.hidden {
+    display: none;
+}
+
+div.tooltip {
+    color: #222;
+    background: #fff;
+    padding: .5em;
+    text-shadow: #f5f5f5 0 1px 0;
+    border-radius: 2px;
+    box-shadow: 0 0 2px 0 #a6a6a6;
+    opacity: 0.9;
+    position: absolute;
+    user-select: none;
+}
+
+.gpoint {
+    z-index: 99999;
+}
+
+.red {
+    fill: red;
+}
+
+.container-fluid {
+    margin-left: 20px !important;
+    margin-right: 20px !important;
+}
+
+.map-legend-text {
+    font-size: 11px;
+}
+
+.point {
+    /*display: none;*/
+}
+
+.timeline {
+    width: 100%;
+    height: 25px;
+    background-color: lightgray;
+    opacity: .3;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+    z-index: 1;
+}
+
+.timeline-progress {
+    top: 0;
+    /*position: absolute;*/
+    width: 0;
+    height: 25px;
+    opacity: .5;
+    background-color: darkgray;
+    -webkit-border-radius: 3px 0 0 3px;
+    border-radius: 3px 0 0 3px;
+    -moz-border-radius: 3px 0 0 3px;
+    border-right: 3px solid black;
+    z-index: 2;
+    margin-top: -25px;
+}
+
+.timeline-progress-hover {
+    width: 3px;
+    height: 25px;
+    margin-top: -25px;
+    opacity: .5;
+    background-color: black;
+    display: none;
+}
+
+.progress-indicator {
+    width: 50px;
+    height: 15px;
+    text-align: center;
+    font-size: 12px;
+    margin-left: -25px;
+    white-space: nowrap;
+}
+
+.play-pause-icon {
+    height: 15px;
+    width: auto;
+    margin-left: 20px;
+}
+
+.date {
+    height: 25px !important;
+    width: 50px;
+}
+
+.date > .form-control {
+    font-size: 11px !important;
+    padding: 8px !important;
+}
+
+.input-group-addon {
+    padding: 5px !important;
+}
+
+.fa {
+    font-size: 11px !important;
+    padding: 0 !important;
+}

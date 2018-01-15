@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="initial-scale=1.0, width=device-width" />
+    <title>UFO Sightings | IDE</title>
+
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.min.css">
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crossfilter/1.3.12/crossfilter.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <script src="https://d3js.org/topojson.v1.min.js"></script> <!--  need add this to read topojson format -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.20.1/moment.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js"></script>
+
+    <script src="vis.js"></script>
+</head>
+
+<body>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <h2 class="centered">Final Project - UFO Sightings</h2>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-10">
+            <div id="map-container"></div>
+        </div>
+        <div class="col-md-2">
+            <svg id="map-legend"></svg>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-1 centered">
+            <div class='input-group date' id='dtpicker-start'>
+                <input class="form-control" />
+                <span class="input-group-addon">
+                    <i class="fa fa-calendar-check-o fa-sm"></i>
+                    </span>
+                </span>
+            </div>
+        </div>
+        <div class="col-md-8 centered">
+            <div class="row">
+                <div class="col-md-1">
+                    <img class="play-pause-icon link" src="img/play.svg"/>
+                </div>
+                <div class="col-md-11">
+                    <div class="timeline tl-hover link"></div>
+                    <div class="timeline-progress tl-hover link"></div>
+                    <div class="timeline-progress-hover tl-hover link"></div>
+                    <div class="progress-indicator">9/9/2013</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-1 centered">
+            <div class='input-group date' id='dtpicker-end'>
+                <input class="form-control" />
+                <span class="input-group-addon">
+                    <i class="fa fa-calendar-check-o fa-sm"></i>
+                </span>
+            </div>
+        </div>
+        <div class="col-md-2"></div>
+    </div>
+    <br>
+    <div class="row">
+        <h2 class = "centered">UFOs by shape</h2>
+        <svg id = "plot-1" class ="centered" width="960" height="500"></svg>
+    </div>
+    <br>
+    <div class="row-left">
+        <!--<div id="radio">
+            <label class = "radio-inline">
+                <input type= "radio" name = "type" value = "shape" onclick = 'plotVisualizations("scrubbed",this.value)'> shape
+            </label>
+            <label class = "radio-inline">
+                <input type= "radio" name = "type" value = "state" onclick = 'plotVisualizations("scrubbed",this.value)'> state
+            </label>
+            <label class = "radio-inline">
+                <input type= "radio" name = "type" value = "year" onclick = 'plotVisualizations("scrubbed",this.value)'> year
+            </label>
+        </div>-->
+        <select name="plot" onchange= 'plotVisualizations("scrubbed",this.value)'>
+            <option value ="shape" >shape</option>
+            <option value ="state" >state</option>
+            <option value ="year" >year</option>
+        </select>
+    </div>
+</div>
+
+
+</body>
+
+</html>
