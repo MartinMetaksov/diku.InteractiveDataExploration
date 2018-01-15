@@ -1,6 +1,9 @@
 d3.select(window).on('load', init);
 
-let ufoData;
+let ufoData,
+    cfData,
+    startDate,
+    endDate;
 
 function init() {
     plotVisualizations('scrubbed');
@@ -14,8 +17,7 @@ function plotVisualizations(db) {
             if (error) throw error;
 
             ufoData = data;
-
-            //let x = crossfilter(data); // crossfilter - when data sizes are huge - http://square.github.io/crossfilter/
+            cfData = crossfilter(data); // crossfilter - when data sizes are huge - http://square.github.io/crossfilter/
 
             initMap(data);
             plotUfos();
@@ -521,6 +523,10 @@ function initMap(data) {
  * Timeline related functions
  */
 
+function validateDates() {
+    return startDate && endDate;
+}
+
 function getBarWidthInPerc(bar) {
     return $(bar).width() / $(bar).parent().width() * 100;
 }
@@ -565,6 +571,10 @@ function pause() {
 
 $(document).ready(function() {
     $('.play-pause-icon').on('click', function() {
+        if (!validateDates()) {
+            alert('You need to choose both a start and an end date');
+            return;
+        }
         if ($(this).attr('src').includes('play')) {
             play();
         } else {
@@ -586,6 +596,10 @@ $(document).ready(function() {
     });
 
     tlHover.on('click', function(e) {
+        if (!validateDates()) {
+            alert('You need to choose both a start and an end date');
+            return;
+        }
         let t = $('.timeline'),
             mouse = e.pageX - t.offset().left,
             p = t.parent().width(),
@@ -606,13 +620,21 @@ $(document).ready(function() {
 });
 
 $(function () {
-    $('#dtpicker-start').datetimepicker({
+    $('#dtpicker-start, #dtpicker-end').datetimepicker({
         viewMode: 'years',
-        format: 'MM/YYYY'
+        format: 'DD/MM/YYYY',
+        minDate: '1940/01/01',
+        maxDate: '2018/01/30'
     });
 
-    $('#dtpicker-end').datetimepicker({
-        viewMode: 'years',
-        format: 'MM/YYYY'
+    $('#dtpicker-start').on('dp.change', function(e) {
+        $('#dtpicker-end').data("DateTimePicker").minDate(e.date.clone().add(1, 'days')).maxDate(e.date.clone().add(1, 'years'));
+        startDate = e.date;
     });
+
+    $('#dtpicker-end').on('dp.change', function(e) {
+        endDate = e.date;
+    });
+
+
 });
