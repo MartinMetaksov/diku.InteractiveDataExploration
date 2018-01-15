@@ -1,7 +1,6 @@
 d3.select(window).on('load', init);
 
-let startDate,
-    endDate;
+let ufoData;
 
 function init() {
     plotVisualizations('scrubbed');
@@ -13,19 +12,35 @@ function plotVisualizations(db) {
         'data/' + db + '.csv',
         (error, data) => {
             if (error) throw error;
-            let x = crossfilter(data); // crossfilter - when data sizes are huge - http://square.github.io/crossfilter/
+
+            ufoData = data;
+
+            //let x = crossfilter(data); // crossfilter - when data sizes are huge - http://square.github.io/crossfilter/
+
             initMap(data);
-            plotUfosByShape(data);
-            plotUfosByState(data);
-            plotUfosByYear(data);
+            plotUfos();
         });
+}
+
+function plotUfos() {
+    switch ($("#plot-selector").val()) {
+        case "state":
+            plotUfosByState(ufoData);
+            break;
+        case "year":
+            plotUfosByYear(ufoData);
+            break;
+        default:
+            plotUfosByShape(ufoData);
+    }
 }
 
 function plotUfosByShape(data) {
 
-    let svg = d3.select('#plot-1');
+    d3.select("#plot-ufos-title").html("UFOs by shape");
 
-    if (svg.empty()) return;
+    let svg = d3.select('#plot-ufos');
+    svg.selectAll("*").remove();
 
     let counts = {};
 
@@ -117,9 +132,11 @@ function plotUfosByShape(data) {
 }
 
 function plotUfosByState(data) {
-    let svg = d3.select('#plot-2');
 
-    if (svg.empty()) return;
+    d3.select("#plot-ufos-title").html("UFOs by state");
+
+    let svg = d3.select('#plot-ufos');
+    svg.selectAll("*").remove();
 
     let counts = {};
 
@@ -202,26 +219,28 @@ function plotUfosByState(data) {
 }
 
 function plotUfosByYear(data) {
-    let svg = d3.select('#plot-3');
 
-    if (svg.empty()) return;
+    d3.select("#plot-ufos-title").html("UFOs by year");
+
+    let svg = d3.select('#plot-ufos');
+    svg.selectAll("*").remove();
 
     let counts = {};
 
     data.forEach(d => {
-        d.datetime = new Date(d.datetime).getFullYear();
+        d.dt = new Date(d.dt).getFullYear();
 
-        if (!counts[d.datetime]) {
-            counts[d.datetime] = 0;
+        if (!counts[d.dt]) {
+            counts[d.dt] = 0;
         }
-        counts[d.datetime]++;
+        counts[d.dt]++;
     });
 
     let dataObj = [];
 
     Object.keys(counts).forEach(key => {
         dataObj.push({
-            datetime: key,
+            dt: key,
             count: counts[key]
         });
     });
@@ -239,13 +258,13 @@ function plotUfosByYear(data) {
         .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 
     let x = d3.scaleBand().rangeRound([0, width]).padding(0.1)
-        .domain(dataObj.map(d => d.datetime));
+        .domain(dataObj.map(d => d.dt));
 
     let y = d3.scaleLinear().rangeRound([height, 0])
         .domain([0, d3.max(dataObj, d => d.count)]).nice();
 
     let xAxis = d3.axisBottom(x)
-        .ticks(d3.datetime);
+        .ticks(d3.dt);
 
     let yAxis = d3.axisRight(y)
         .tickSize(width)
@@ -279,7 +298,7 @@ function plotUfosByYear(data) {
         .data(dataObj)
         .enter().append('rect')
         .attr('class', 'bar')
-        .attr('x', d => x(d.datetime))
+        .attr('x', d => x(d.dt))
         .attr('y', d => y(d.count))
         .attr('width', x.bandwidth())
         .attr('height', d => height - y(d.count))
@@ -544,16 +563,8 @@ function pause() {
     }
 }
 
-function validateDates() {
-    return startDate && endDate;
-}
-
 $(document).ready(function() {
     $('.play-pause-icon').on('click', function() {
-        if (!validateDates()) {
-            alert('You need to choose both a start and an end date');
-            return;
-        }
         if ($(this).attr('src').includes('play')) {
             play();
         } else {
@@ -575,10 +586,6 @@ $(document).ready(function() {
     });
 
     tlHover.on('click', function(e) {
-        if (!validateDates()) {
-            alert('You need to choose both a start and an end date');
-            return;
-        }
         let t = $('.timeline'),
             mouse = e.pageX - t.offset().left,
             p = t.parent().width(),
@@ -596,21 +603,16 @@ $(document).ready(function() {
             $('.play-pause-icon').click();
         }
     });
+});
 
-    $('#dtpicker-start, #dtpicker-end').datetimepicker({
+$(function () {
+    $('#dtpicker-start').datetimepicker({
         viewMode: 'years',
-        format: 'DD/MM/YYYY',
-        minDate: '1940/01/01',
-        maxDate: '2018/01/30'
+        format: 'MM/YYYY'
     });
 
-    $('#dtpicker-start').on('dp.change', function(e) {
-        $('#dtpicker-end').data("DateTimePicker").minDate(e.date.clone().add(1, 'days'));
-        $('#dtpicker-end').data("DateTimePicker").maxDate(e.date.clone().add(1, 'years'));
-        startDate = e.date;
-    });
-
-    $('#dtpicker-end').on('dp.change', function(e) {
-        endDate = e.date;
+    $('#dtpicker-end').datetimepicker({
+        viewMode: 'years',
+        format: 'MM/YYYY'
     });
 });

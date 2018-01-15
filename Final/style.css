@@ -69,9 +69,8 @@ body {
     margin-top: 250px;
 }
 
-.ufo-container {
-    position: fixed;
-    left: 100px;
+.plot-ufos-container {
+    margin: 30px 0;
 }
 
 /*Axis*/
@@ -108,6 +107,16 @@ body {
     padding: 10px;
     text-align: center;
     -webkit-text-fill-color: white;
+}
+
+/*RADIO*/
+#radio {
+    text-align: left;
+    font: 20px Dubai;
+}
+
+.row-left {
+    text-align: center;
 }
 
 /* MAP */
@@ -234,7 +243,7 @@ div.tooltip {
 
 .date > .form-control {
     font-size: 11px !important;
-    padding: 2px !important;
+    padding: 8px !important;
 }
 
 .input-group-addon {
