@@ -169,7 +169,7 @@ function plotUfosByShape(data) {
 
 function plotUfosByState(data) {
 
-    d3.select("#plot-ufos-title").html("UFOs by US state");
+    d3.select("#plot-ufos-title").html("UFOs by state");
 
     let svg = d3.select('#plot-ufos');
     svg.selectAll("*").remove();
