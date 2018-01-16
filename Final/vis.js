@@ -48,8 +48,8 @@ function plotVisualizations(db) {
 
 function plotUfos() {
     switch ($("#plot-selector").val()) {
-        case "state":
-            plotUfosByState(ufoData);
+        case "country":
+            plotUfosByCountry(ufoData);
             break;
         case "year":
             plotUfosByYear(ufoData);
@@ -167,9 +167,9 @@ function plotUfosByShape(data) {
         .style('fill', (d, i) => colors(i));
 }
 
-function plotUfosByState(data) {
+function plotUfosByCountry(data) {
 
-    d3.select("#plot-ufos-title").html("UFOs by state");
+    d3.select("#plot-ufos-title").html("UFOs by country");
 
     let svg = d3.select('#plot-ufos');
     svg.selectAll("*").remove();
@@ -177,23 +177,45 @@ function plotUfosByState(data) {
     let counts = {};
 
     data.forEach(d => {
-        if (!counts[d.state]) {
-            counts[d.state] = 0;
+        switch (d.country) {
+            case ("AU" || "Australia"):
+                d.country = "Australia";
+                break;
+            case ("DE" || "Germany"):
+                d.country = "Germany";
+                break;
+            case ("CA" || "Canada"):
+                d.country = "Canada";
+                break;
+            case ("GB" || "Great Britain"):
+                d.country = "Great Britain";
+                break;
+            case ("US" || "United States"):
+                d.country = "United States";
+                break;
+            case (""):
+                d.country = "N/A";
+                break;
+            default:
+                break;
         }
-        counts[d.state]++;
+        if (!counts[d.country]) {
+            counts[d.country] = 0;
+        }
+        counts[d.country]++;
     });
 
     let dataObj = [];
 
     Object.keys(counts).forEach(key => {
         dataObj.push({
-            state: key,
+            country: key,
             count: counts[key]
         });
     });
 
     dataObj.forEach(d => {
-        d.state = d.state.toUpperCase();
+        //d.state = d.state.toUpperCase();
         d.count = +d.count;
     });
 
@@ -205,7 +227,7 @@ function plotUfosByState(data) {
         .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 
     let x = d3.scaleBand().rangeRound([0, width]).padding(0.1)
-        .domain(dataObj.map(d => (d.state)));
+        .domain(dataObj.map(d => d.country));
 
     let y = d3.scaleLinear().rangeRound([height, 0])
         .domain([0, d3.max(dataObj, d => d.count)]).nice();
@@ -224,7 +246,7 @@ function plotUfosByState(data) {
     function customXAxis(g) {
         g.call(xAxis);
         g.select('.domain').remove();
-        g.selectAll('.tick text').attr('transform', 'rotate(-90)').attr('y', 6).attr('dy', '-0.1em').attr('dx', '-1.5em');
+        g.selectAll('.tick text').attr('transform', 'rotate(0)').attr('y', 6).attr('dy', '1.9em').attr('dx', '0em');
     }
 
     function customYAxis(g) {
@@ -248,14 +270,14 @@ function plotUfosByState(data) {
         .data(dataObj)
         .enter().append('rect')
         .attr('class', 'bar')
-        .attr('x', d => x(d.state))
+        .attr('x', d => x(d.country))
         .attr('y', height)
         .on('mousemove', d => {
             tooltip
                 .style('left', d3.event.pageX - 50 + 'px')
                 .style('top', d3.event.pageY - 70 + 'px')
                 .style('display', 'inline-block')
-                .html((d.state) + '<br>' + (d.count) + ' UFOs');
+                .html((d.country) + '<br>' + (d.count) + ' UFOs');
         })
         .on('mouseout', () => {
             tooltip.style('display', 'none');
@@ -269,6 +291,7 @@ function plotUfosByState(data) {
         .attr('y', d => y(d.count))
         .attr('height', d => height - y(d.count));
 }
+
 
 function plotUfosByYear(data) {
 
