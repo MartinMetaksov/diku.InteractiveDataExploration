@@ -2,8 +2,9 @@ d3.select(window).on('load', init);
 
 let ufoData,
     cfData,
-    startDate = moment('12/10/2013'),
+    startDate = moment('12/10/2012'),
     endDate = moment('01/01/2014'),
+    stepLength = 1000,
     currentMoment,
     totalDuration,
     interval,
@@ -709,7 +710,7 @@ function initMap(data) {
 
         svg.transition().call(zoom.transform, centerTransform);
 
-        addPoints(data.slice(0, 100));
+        // addPoints(data.slice(0, 100));
     }
 
     function redraw() {
@@ -793,11 +794,7 @@ function initMap(data) {
             .range([1, 3])
             .clamp(true);
 
-        g.selectAll('.gpoint')
-            .transition()
-            .duration(50)
-            .style('opacity', 0.0)
-            .remove();
+        let oldPoints = g.selectAll('.gpoint');
 
         g.selectAll('g')
             .data(data)
@@ -814,21 +811,22 @@ function initMap(data) {
             .on('mouseout', handleMouseOut)
             .style('opacity', 0.0)
             .transition()
-            .duration(100)
-            .style('opacity', 1.0)
+            .duration(400)
+            .style('opacity', 1.0);
+
+        setTimeout(function() {
+            oldPoints
+                .transition()
+                .duration(600)
+                .style('opacity', 0.0)
+                .remove();
+        }, 2000);
     }
 
-}
+    /*
+     * Timeline related functions
+     */
 
-String.prototype.capitalize = function(){
-    return this.replace(/\b\w/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
-};
-
-/*
- * Timeline related functions
- */
-
-$(function () {
     $('#dtpicker-start, #dtpicker-end').datetimepicker({
         viewMode: 'years',
         format: 'DD/MM/YYYY',
@@ -840,36 +838,33 @@ $(function () {
     $('#dtpicker-start').data('DateTimePicker').defaultDate(startDate);
     $('#dtpicker-end').data('DateTimePicker').defaultDate(endDate);
 
+    $('#dtpicker-end').on('dp.change', function(e) {
+        endDate = e.date;
+        resetProgressBar();
+    });
+
     $('#dtpicker-start').on('dp.change', function(e) {
         startDate = e.date;
         resetProgressBar();
         $('#dtpicker-end').data("DateTimePicker").minDate(e.date.clone().add(1, 'days'));
     });
 
-    $('#dtpicker-end').on('dp.change', function(e) {
-        endDate = e.date;
-        resetProgressBar();
-    });
+    function getPercByMoment() {
+        return Number((currentMoment / totalDuration) * 100).toFixed(2);
+    }
 
-});
+    function getMomentByPerc(perc) {
+        return Number((perc * totalDuration) / 100).toFixed(0);
+    }
 
-function getPercByMoment() {
-    return Number((currentMoment / totalDuration) * 100).toFixed(2);
-}
+    function validateDates() {
+        return startDate && endDate;
+    }
 
-function getMomentByPerc(perc) {
-    return Number((perc * totalDuration) / 100).toFixed(0);
-}
+    function getBarWidthInPerc(bar) {
+        return $(bar).width() / $(bar).parent().width() * 100;
+    }
 
-function validateDates() {
-    return startDate && endDate;
-}
-
-function getBarWidthInPerc(bar) {
-    return $(bar).width() / $(bar).parent().width() * 100;
-}
-
-$(document).ready(function() {
     $('.play-pause-icon').on('click', function() {
         if (!validateDates()) {
             alert('You need to choose both a start and an end date');
@@ -922,58 +917,63 @@ $(document).ready(function() {
             $('.play-pause-icon').click();
         }
     });
-});
 
-function resetProgressBar() {
-    pause();
-    currentMoment = undefined;
-    totalDuration = undefined;
-    $('.progress-indicator').text(startDate.clone().format("DD/MM/YYYY"));
-    setProgressBar(0.0);
-}
+    function resetProgressBar() {
+        pause();
+        currentMoment = undefined;
+        totalDuration = undefined;
+        $('.progress-indicator').text(startDate.clone().format("DD/MM/YYYY"));
+        setProgressBar(0.0);
+    }
 
 // distance must be in %
-function setProgressBar(distance) {
-    $('.timeline-progress').width(distance + '%');
-    $('.progress-indicator').css({paddingLeft: distance + '%'});
-}
+    function setProgressBar(distance) {
+        $('.timeline-progress').width(distance + '%');
+        $('.progress-indicator').css({paddingLeft: distance + '%'});
+    }
 
 
-function getAndDisplaySightings() {
-    let date = startDate.clone().add(currentMoment, 'days');
-    let cfDayData;
-    cfDayData = datetimeDimension.filterAll().filter(dt => moment(dt).isSame(date, 'day')).top(Infinity);
+    function getAndDisplaySightings() {
+        let date = startDate.clone().add(currentMoment, 'days');
+        let cfDayData;
+        cfDayData = datetimeDimension.filterAll().filter(dt => moment(dt).isSame(date, 'day')).top(Infinity);
+        addPoints(cfDayData);
+    }
 
-    
-}
+    function play() {
+        $('.play-pause-icon').attr('src', 'img/pause.svg');
+        let bar = $('.timeline-progress')[0];
+        let cWidth = getBarWidthInPerc(bar);
 
-function play() {
-    $('.play-pause-icon').attr('src', 'img/pause.svg');
-    let bar = $('.timeline-progress')[0];
-    let cWidth = getBarWidthInPerc(bar);
+        interval = setInterval(function() {
+            cWidth = Number(getPercByMoment());
+            if (cWidth >= 100) {
+                cWidth = 100;
+            }
+            getAndDisplaySightings();
+            $('.progress-indicator').text(startDate.clone().add(currentMoment, 'days').format("DD/MM/YYYY"));
+            if (cWidth === 100) {
+                $('.play-pause-icon').attr('src', 'img/play.svg');
+                clearInterval(interval);
+                interval = undefined;
+            }
+            setProgressBar(cWidth);
+            currentMoment++;
+        }, stepLength)
+    }
 
-    interval = setInterval(function() {
-        cWidth = Number(getPercByMoment());
-        if (cWidth >= 100) {
-            cWidth = 100;
-        }
-        getAndDisplaySightings();
-        $('.progress-indicator').text(startDate.clone().add(currentMoment, 'days').format("DD/MM/YYYY"));
-        if (cWidth === 100) {
-            $('.play-pause-icon').attr('src', 'img/play.svg');
+
+    function pause() {
+        $('.play-pause-icon').attr('src', 'img/play.svg');
+        if (interval) {
             clearInterval(interval);
             interval = undefined;
         }
-        setProgressBar(cWidth);
-        currentMoment++;
-    }, 300)
-}
-
-
-function pause() {
-    $('.play-pause-icon').attr('src', 'img/play.svg');
-    if (interval) {
-        clearInterval(interval);
-        interval = undefined;
     }
+
 }
+
+String.prototype.capitalize = function(){
+    return this.replace(/\b\w/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
+};
+
