@@ -18,10 +18,22 @@ function plotVisualizations(db) {
         (error, data) => {
             if (error) throw error;
 
-            ufoData = data;
+            // Data cleanup
+            data.forEach(d => {
+                d.dt = new Date(d.dt);
+                d.year = d.dt.getFullYear();
+                d.duration_sec = +d.duration_sec || 0;
+                d.city = d.city.capitalize();
+                d.state = d.state.length <= 3 ? d.state.toUpperCase() : d.state.capitalize();
+                d.country = d.country.length <= 3 ? d.country.toUpperCase() : d.country.capitalize();
+                d.latitude = +d.latitude;
+                d.longitude = +d.longitude;
+            });
+            ufoData = data.filter(d => !isNaN(d.latitude) && !isNaN(d.longitude) && d.latitude !== 0 && d.longitude !== 0);
+
             cfData = crossfilter(data); // crossfilter - when data sizes are huge - http://square.github.io/crossfilter/
 
-            initMap(data);
+            initMap(ufoData);
             plotUfos();
         });
 }
@@ -137,7 +149,7 @@ function plotUfosByShape(data) {
 
 function plotUfosByState(data) {
 
-    d3.select("#plot-ufos-title").html("UFOs by state");
+    d3.select("#plot-ufos-title").html("UFOs by US state");
 
     let svg = d3.select('#plot-ufos');
     svg.selectAll("*").remove();
@@ -232,12 +244,10 @@ function plotUfosByYear(data) {
     let counts = {};
 
     data.forEach(d => {
-        d.dt = new Date(d.dt).getFullYear();
-
-        if (!counts[d.dt]) {
-            counts[d.dt] = 0;
+        if (!counts[d.year]) {
+            counts[d.year] = 0;
         }
-        counts[d.dt]++;
+        counts[d.year]++;
     });
 
     let dataObj = [];
@@ -248,11 +258,6 @@ function plotUfosByYear(data) {
             count: counts[key]
         });
     });
-
-    dataObj.forEach(d => {
-        d.count = +d.count;
-    });
-
 
     let margin = {top: 20, right: 20, bottom: 60, left: 40},
         width = +svg.attr('width') - margin.left - margin.right,
@@ -386,12 +391,12 @@ function initMap(data) {
 
     });
 
-    function handleMouseOver() {
+    function handleMouseOver(text) {
         let mouse = d3.mouse(svg.node()).map(d => parseInt(d));
 
         tooltip.classed('hidden', false)
             .attr('style', 'left:' + (mouse[0] + offsetL) + 'px;top:' + (mouse[1] + offsetT) + 'px')
-            .html(this.__data__.properties.name);
+            .html(text);
     }
 
     function handleMouseOut() {
@@ -407,7 +412,7 @@ function initMap(data) {
             .attr('d', path)
             .attr('id', d => d.id)
             .attr('title', d => d.properties.name)
-            .on('mouseover', handleMouseOver)
+            .on('mouseover', d => handleMouseOver(d.properties.name))
             .on('mouseout', handleMouseOut)
             .on('click', clicked);
 
@@ -499,27 +504,34 @@ function initMap(data) {
             .call(zoom.transform, centerTransform);
     }
 
-    //function to add points and text to the map (used in plotting capitals)
     function addPoints(data) {
-        /*
-        We have noticed that some of the data has its shape and duration (hours,min)
-         */
-        let clearData = data.filter(d => !isNaN(d.latitude) && !isNaN(d.longitude));
+
+        let scaleDuration = d3.scaleLinear()
+            .domain([0, 1000])
+            .range([1, 3])
+            .clamp(true);
 
         g.selectAll('.gpoint').remove();
         g.selectAll('g')
-            .data(clearData)
+            .data(data)
             .enter()
-            .append('g').attr('class', 'gpoint')
+            .append('g')
+            .attr('class', 'gpoint')
             .append('svg:circle')
             .attr('cx', d => projection([d.longitude, d.latitude])[0])
             .attr('cy', d => projection([d.longitude, d.latitude])[1])
-            // .attr('class', 'point')
+            .attr('r', d => scaleDuration(d.duration_sec))
             .style('fill', d => d.shape === "" ? shapeColor(shapes.indexOf("unknown")) : shapeColor(shapes.indexOf(d.shape)))
-            .attr('r', 1);
+            .on('mouseover', d => handleMouseOver(d.dt.toLocaleString() + '<br />' + d.city
+                + (d.state ? ', ' : '') + d.state + (d.country ? ', ' : '') + d.country + '<br />' + d.comments))
+            .on('mouseout', handleMouseOut)
     }
 
 }
+
+String.prototype.capitalize = function(){
+    return this.replace(/\b\w/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
+};
 
 /*
  * Timeline related functions
