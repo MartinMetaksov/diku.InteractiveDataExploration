@@ -3,7 +3,9 @@ d3.select(window).on('load', init);
 let ufoData,
     cfData,
     startDate,
-    endDate;
+    endDate,
+    currentMoment,
+    totalDuration;
 
 function init() {
     plotVisualizations('scrubbed');
@@ -313,7 +315,7 @@ function initMap(data) {
 
     let shapes = getUniqueShapes(data);
 
-    let shapeColor = d3.scaleOrdinal(d3.schemeCategory20c);
+    let shapeColor = d3.scaleOrdinal(d3.schemeCategory10);
 
     drawMapLegend();
 
@@ -523,6 +525,14 @@ function initMap(data) {
  * Timeline related functions
  */
 
+function getPercByMoment() {
+    return Number((currentMoment / totalDuration) * 100).toFixed(2);
+}
+
+function getMomentByPerc(perc) {
+    return Number((perc * totalDuration) / 100).toFixed(0);
+}
+
 function validateDates() {
     return startDate && endDate;
 }
@@ -532,6 +542,13 @@ function getBarWidthInPerc(bar) {
 }
 
 let interval;
+
+function resetProgressBar() {
+    pause();
+    currentMoment = undefined;
+    totalDuration = undefined;
+    setProgressBar(0);
+}
 
 // distance must be in %
 function setProgressBar(distance) {
@@ -544,20 +561,29 @@ function play() {
     let bar = $('.timeline-progress')[0];
     let cWidth = getBarWidthInPerc(bar);
 
+    /*
+     * 24/01/2015 - 25/01/2015 = 365 days
+     * take data for 1 day at a time
+     * day = 1
+     * cWidth = (1/365)*100 round to 0.2f
+     *
+     */
+
     interval = setInterval(function() {
-        // todo: properly increase the percentage instead of using 10
-        cWidth += 1;
+        cWidth = Number(getPercByMoment());
         if (cWidth >= 100) {
             cWidth = 100;
         }
         // todo: call function for toggling the data points
         setProgressBar(cWidth);
+        currentMoment++;
+        $('.progress-indicator').text(startDate.clone().add(currentMoment, 'days').format("DD/MM/YYYY"));
         if (cWidth === 100) {
             $('.play-pause-icon').attr('src', 'img/play.svg');
             clearInterval(interval);
             interval = undefined;
         }
-    }, 50)
+    }, 300)
 }
 
 
@@ -576,6 +602,8 @@ $(document).ready(function() {
             return;
         }
         if ($(this).attr('src').includes('play')) {
+            totalDuration = endDate.diff(startDate, 'days');
+            currentMoment = 1;
             play();
         } else {
             pause();
@@ -607,6 +635,9 @@ $(document).ready(function() {
             playing = $('.play-pause-icon').attr('src').includes('pause');
         pause();
         setProgressBar(m);
+        currentMoment = getMomentByPerc(m);
+        totalDuration = endDate.diff(startDate, 'days');
+        $('.progress-indicator').text(startDate.clone().add(currentMoment, 'days').format("DD/MM/YYYY"));
         if (playing) {
             play();
         }
@@ -628,13 +659,14 @@ $(function () {
     });
 
     $('#dtpicker-start').on('dp.change', function(e) {
+        resetProgressBar();
         $('#dtpicker-end').data("DateTimePicker").minDate(e.date.clone().add(1, 'days')).maxDate(e.date.clone().add(1, 'years'));
         startDate = e.date;
     });
 
     $('#dtpicker-end').on('dp.change', function(e) {
+        resetProgressBar();
         endDate = e.date;
     });
-
 
 });
