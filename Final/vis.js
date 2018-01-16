@@ -2,17 +2,18 @@ d3.select(window).on('load', init);
 
 let ufoData,
     cfData,
-    startDate,
-    endDate,
+    startDate = moment('12/10/2013'),
+    endDate = moment('01/01/2014'),
     currentMoment,
-    totalDuration;
+    totalDuration,
+    interval,
+    datetimeDimension;
 
 function init() {
     plotVisualizations('scrubbed');
 }
 
 function plotVisualizations(db) {
-
     d3.csv(
         'data/' + db + '.csv',
         (error, data) => {
@@ -32,6 +33,8 @@ function plotVisualizations(db) {
             ufoData = data.filter(d => !isNaN(d.latitude) && !isNaN(d.longitude) && d.latitude !== 0 && d.longitude !== 0);
 
             cfData = crossfilter(data); // crossfilter - when data sizes are huge - http://square.github.io/crossfilter/
+            datetimeDimension = cfData.dimension(d => d.dt);
+
 
             initMap(ufoData);
             plotUfos();
@@ -537,6 +540,31 @@ String.prototype.capitalize = function(){
  * Timeline related functions
  */
 
+$(function () {
+    $('#dtpicker-start, #dtpicker-end').datetimepicker({
+        viewMode: 'years',
+        format: 'DD/MM/YYYY',
+        minDate: '1940/01/01',
+        maxDate: '2014/01/01',
+        useCurrent: false,
+    });
+
+    $('#dtpicker-start').data('DateTimePicker').defaultDate(startDate);
+    $('#dtpicker-end').data('DateTimePicker').defaultDate(endDate);
+
+    $('#dtpicker-start').on('dp.change', function(e) {
+        startDate = e.date;
+        resetProgressBar();
+        $('#dtpicker-end').data("DateTimePicker").minDate(e.date.clone().add(1, 'days'));
+    });
+
+    $('#dtpicker-end').on('dp.change', function(e) {
+        endDate = e.date;
+        resetProgressBar();
+    });
+
+});
+
 function getPercByMoment() {
     return Number((currentMoment / totalDuration) * 100).toFixed(2);
 }
@@ -553,60 +581,6 @@ function getBarWidthInPerc(bar) {
     return $(bar).width() / $(bar).parent().width() * 100;
 }
 
-let interval;
-
-function resetProgressBar() {
-    pause();
-    currentMoment = undefined;
-    totalDuration = undefined;
-    setProgressBar(0);
-}
-
-// distance must be in %
-function setProgressBar(distance) {
-    $('.timeline-progress').width(distance + '%'); // todo: for now increase with 1% every second, but fix that later
-    $('.progress-indicator').css({paddingLeft: distance + '%'});
-}
-
-function play() {
-    $('.play-pause-icon').attr('src', 'img/pause.svg');
-    let bar = $('.timeline-progress')[0];
-    let cWidth = getBarWidthInPerc(bar);
-
-    /*
-     * 24/01/2015 - 25/01/2015 = 365 days
-     * take data for 1 day at a time
-     * day = 1
-     * cWidth = (1/365)*100 round to 0.2f
-     *
-     */
-
-    interval = setInterval(function() {
-        cWidth = Number(getPercByMoment());
-        if (cWidth >= 100) {
-            cWidth = 100;
-        }
-        // todo: call function for toggling the data points
-        setProgressBar(cWidth);
-        currentMoment++;
-        $('.progress-indicator').text(startDate.clone().add(currentMoment, 'days').format("DD/MM/YYYY"));
-        if (cWidth === 100) {
-            $('.play-pause-icon').attr('src', 'img/play.svg');
-            clearInterval(interval);
-            interval = undefined;
-        }
-    }, 300)
-}
-
-
-function pause() {
-    $('.play-pause-icon').attr('src', 'img/play.svg');
-    if (interval) {
-        clearInterval(interval);
-        interval = undefined;
-    }
-}
-
 $(document).ready(function() {
     $('.play-pause-icon').on('click', function() {
         if (!validateDates()) {
@@ -615,7 +589,7 @@ $(document).ready(function() {
         }
         if ($(this).attr('src').includes('play')) {
             totalDuration = endDate.diff(startDate, 'days');
-            currentMoment = 1;
+            currentMoment = 0;
             play();
         } else {
             pause();
@@ -662,23 +636,56 @@ $(document).ready(function() {
     });
 });
 
-$(function () {
-    $('#dtpicker-start, #dtpicker-end').datetimepicker({
-        viewMode: 'years',
-        format: 'DD/MM/YYYY',
-        minDate: '1940/01/01',
-        maxDate: '2018/01/30'
-    });
+function resetProgressBar() {
+    pause();
+    currentMoment = undefined;
+    totalDuration = undefined;
+    $('.progress-indicator').text(startDate.clone().format("DD/MM/YYYY"));
+    setProgressBar(0.0);
+}
 
-    $('#dtpicker-start').on('dp.change', function(e) {
-        resetProgressBar();
-        $('#dtpicker-end').data("DateTimePicker").minDate(e.date.clone().add(1, 'days')).maxDate(e.date.clone().add(1, 'years'));
-        startDate = e.date;
-    });
+// distance must be in %
+function setProgressBar(distance) {
+    $('.timeline-progress').width(distance + '%');
+    $('.progress-indicator').css({paddingLeft: distance + '%'});
+}
 
-    $('#dtpicker-end').on('dp.change', function(e) {
-        resetProgressBar();
-        endDate = e.date;
-    });
 
-});
+function getAndDisplaySightings() {
+    let date = startDate.clone().add(currentMoment, 'days');
+    let cfDayData;
+    cfDayData = datetimeDimension.filterAll().filter(dt => moment(dt).isSame(date, 'day')).top(Infinity);
+
+    
+}
+
+function play() {
+    $('.play-pause-icon').attr('src', 'img/pause.svg');
+    let bar = $('.timeline-progress')[0];
+    let cWidth = getBarWidthInPerc(bar);
+
+    interval = setInterval(function() {
+        cWidth = Number(getPercByMoment());
+        if (cWidth >= 100) {
+            cWidth = 100;
+        }
+        getAndDisplaySightings();
+        $('.progress-indicator').text(startDate.clone().add(currentMoment, 'days').format("DD/MM/YYYY"));
+        if (cWidth === 100) {
+            $('.play-pause-icon').attr('src', 'img/play.svg');
+            clearInterval(interval);
+            interval = undefined;
+        }
+        setProgressBar(cWidth);
+        currentMoment++;
+    }, 300)
+}
+
+
+function pause() {
+    $('.play-pause-icon').attr('src', 'img/play.svg');
+    if (interval) {
+        clearInterval(interval);
+        interval = undefined;
+    }
+}
