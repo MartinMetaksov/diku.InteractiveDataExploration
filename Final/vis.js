@@ -770,7 +770,12 @@ function initMap(data) {
             .range([1, 3])
             .clamp(true);
 
-        g.selectAll('.gpoint').remove();
+        g.selectAll('.gpoint')
+            .transition()
+            .duration(50)
+            .style('opacity', 0.0)
+            .remove();
+
         g.selectAll('g')
             .data(data)
             .enter()
@@ -784,6 +789,10 @@ function initMap(data) {
             .on('mouseover', d => handleMouseOver(d.dt.toLocaleString() + '<br />' + d.city
                 + (d.state ? ', ' : '') + d.state + (d.country ? ', ' : '') + d.country + '<br />' + d.comments))
             .on('mouseout', handleMouseOut)
+            .style('opacity', 0.0)
+            .transition()
+            .duration(100)
+            .style('opacity', 1.0)
     }
 
 }
