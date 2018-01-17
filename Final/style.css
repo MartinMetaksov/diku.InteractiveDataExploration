@@ -24,6 +24,10 @@ img {
     height: auto;
 }
 
+p {
+    text-align: justify;
+}
+
 .introduction-text {
     text-align: justify;
     align-content: center;
