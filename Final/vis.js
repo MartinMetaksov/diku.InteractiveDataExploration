@@ -6,7 +6,7 @@ let ufoData,
     endDate = moment('01/01/2014'),
     stepLength = 1000,
     currentMoment,
-    totalDuration,
+    totalDuration = endDate.diff(startDate, 'days'),
     interval,
     datetimeDimension,
     monthLetter = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
@@ -633,7 +633,8 @@ function initMap(data) {
 
     function drawMapLegend() {
         let g = d3.select('#map-legend')
-            .attr('height', 500);
+            .attr('height', 500)
+            .attr('width', 180);
         let dg = g.selectAll('circle')
             .data(shapes).enter();
 
@@ -872,7 +873,7 @@ function initMap(data) {
         }
         if ($(this).attr('src').includes('play')) {
             totalDuration = endDate.diff(startDate, 'days');
-            currentMoment = 0;
+            currentMoment = currentMoment ? currentMoment : 0;
             play();
         } else {
             pause();

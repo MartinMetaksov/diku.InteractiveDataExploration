@@ -256,7 +256,8 @@ div.tooltip {
 .play-pause-icon {
     height: 15px;
     width: auto;
-    margin-left: 20px;
+    margin-right: -60px;
+
 }
 
 .date {

@@ -30,7 +30,7 @@
         </div>
     </div>
     <div class="row">
-        <div class="introduction-text col-md-6 offset-md-3">
+        <div class="introduction-text col-md-8 offset-md-2">
             <h3>UFO Context</h3>
             <p>
                 When we think of a UFO, we often imagine things of science fiction, but we do not imagine that this can be a
@@ -109,6 +109,25 @@
             </p>
         </div>
     </div>
+    <!-- Bar char visualisations -->
+    <div class="plot-ufos-container">
+        <div class="row">
+            <h2 id="plot-ufos-title" class="centered">UFOs by shape</h2>
+        </div>
+        <div class="row">
+            <svg id = "plot-ufos" class ="centered" width="960" height="500"></svg>
+        </div>
+        <div class="row-left">
+            <select id="plot-selector" name="plot" onchange="plotUfos()">
+                <option value ="shape" >UFOs by shape</option>
+                <option value ="country" >UFOs by country</option>
+                <option value ="year" >UFOs by year</option>
+                <option value ="month" >UFOs by month</option>
+                <option value ="day" >UFOs by day</option>
+            </select>
+        </div>
+    </div>
+    <!-- Map -->
     <div class="row">
         <div class="col-md-10">
             <div id="map-container"></div>
@@ -117,6 +136,7 @@
             <svg id="map-legend"></svg>
         </div>
     </div>
+    <!-- Map timeline -->
     <div class="row">
         <div class="col-md-1 centered">
             <div class='input-group date' id='dtpicker-start'>
@@ -148,23 +168,6 @@
             </div>
         </div>
         <div class="col-md-2"></div>
-    </div>
-    <div class="plot-ufos-container">
-        <div class="row">
-            <h2 id="plot-ufos-title" class="centered">UFOs by shape</h2>
-        </div>
-        <div class="row">
-            <svg id = "plot-ufos" class ="centered" width="960" height="500"></svg>
-        </div>
-        <div class="row-left">
-            <select id="plot-selector" name="plot" onchange="plotUfos()">
-                <option value ="shape" >UFOs by shape</option>
-                <option value ="country" >UFOs by country</option>
-                <option value ="year" >UFOs by year</option>
-                <option value ="month" >UFOs by month</option>
-                <option value ="day" >UFOs by day</option>
-            </select>
-        </div>
     </div>
 </div>
 
