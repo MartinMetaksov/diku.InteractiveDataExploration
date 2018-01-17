@@ -27,10 +27,11 @@ img {
 .introduction-text {
     text-align: justify;
     align-content: center;
-    width: 1000px;
+    padding: 20px;
+    margin-right: 45px;
     overflow: hidden;
     text-overflow: ellipsis;
-    margin: auto;
+    /*margin: auto;*/
 }
 
 .link {
