@@ -9,8 +9,8 @@ let ufoData,
     totalDuration = endDate.diff(startDate, 'days'),
     interval,
     datetimeDimension,
-    monthLetter = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-    dayLetter = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    shapes,
+    shapeColor = d3.scaleOrdinal(d3.schemeCategory20);
 
 function init() {
     plotVisualizations('scrubbed');
@@ -23,7 +23,9 @@ function plotVisualizations(db) {
             if (error) throw error;
 
             // Data cleanup
-            data.forEach(d => {
+            let shapeCounts = new Map();
+            ufoData = data.filter(d => !isNaN(+d.latitude) && !isNaN(+d.longitude) && +d.latitude !== 0 && +d.longitude !== 0);
+            ufoData.forEach(d => {
                 d.dt = new Date(d.dt);
                 d.year = d.dt.getFullYear();
                 d.month = d.dt.getMonth();
@@ -34,10 +36,31 @@ function plotVisualizations(db) {
                 d.country = d.country.length <= 3 ? d.country.toUpperCase() : d.country.capitalize();
                 d.latitude = +d.latitude;
                 d.longitude = +d.longitude;
-            });
-            ufoData = data.filter(d => !isNaN(d.latitude) && !isNaN(d.longitude) && d.latitude !== 0 && d.longitude !== 0);
+                d.shape = d.shape || "unknown";
+                shapeCounts.set(d.shape, (shapeCounts.get(d.shape) || 0) + 1);
 
-            cfData = crossfilter(data); // crossfilter - when data sizes are huge - http://square.github.io/crossfilter/
+                switch (d.country) {
+                    case ("AU" || "Australia"):
+                        d.country = "Australia";
+                        break;
+                    case ("DE" || "Germany"):
+                        d.country = "Germany";
+                        break;
+                    case ("CA" || "Canada"):
+                        d.country = "Canada";
+                        break;
+                    case ("GB" || "Great Britain"):
+                        d.country = "Great Britain";
+                        break;
+                    case ("US" || "United States"):
+                        d.country = "United States";
+                        break;
+                }
+            });
+            // Shapes sorted by count
+            shapes = Array.from(shapeCounts, d => ({shape: d[0], count: d[1]})).sort((a, b) => b.count - a.count);
+
+            cfData = crossfilter(ufoData); // crossfilter - when data sizes are huge - http://square.github.io/crossfilter/
             datetimeDimension = cfData.dimension(d => d.dt);
 
 
@@ -46,560 +69,8 @@ function plotVisualizations(db) {
         });
 }
 
-function plotUfos() {
-    switch ($("#plot-selector").val()) {
-        case "country":
-            plotUfosByCountry(ufoData);
-            break;
-        case "year":
-            plotUfosByYear(ufoData);
-            break;
-        case "month":
-            plotUfosByMonth(ufoData);
-            break;
-        case "day":
-            plotUfosByDay(ufoData);
-            break;
-        default:
-            plotUfosByShape(ufoData);
-    }
-}
-
-function plotUfosByShape(data) {
-
-    d3.select("#plot-ufos-title").html("UFOs by shape");
-
-    let svg = d3.select('#plot-ufos');
-    svg.selectAll("*").remove();
-
-    let counts = {};
-
-    data.forEach(d => {
-        if (!counts[d.shape]) {
-            counts[d.shape] = 0;
-        }
-        counts[d.shape]++;
-    });
-
-    let dataObj = [];
-
-    Object.keys(counts).forEach(key => {
-        dataObj.push({
-            shape: key,
-            count: counts[key]
-        });
-    });
-
-    dataObj.forEach(d => {
-        d.count = +d.count;
-    });
-
-    let margin = {top: 20, right: 20, bottom: 60, left: 40},
-        width = +svg.attr('width') - margin.left - margin.right,
-        height = +svg.attr('height') - margin.top - margin.bottom;
-
-    let g = svg.append('g')
-        .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
-
-    let x = d3.scaleBand().rangeRound([0, width]).padding(0.1)
-        .domain(dataObj.map(d => d.shape));
-
-    let y = d3.scaleLinear().rangeRound([height, 0])
-        .domain([0, d3.max(dataObj, d => d.count)]).nice();
-
-    let xAxis = d3.axisBottom(x);
-
-    let yAxis = d3.axisRight(y)
-        .tickSize(width)
-        .tickFormat(function (d) {
-            return this.parentNode.nextSibling
-                ? '\xa0' + d
-                : d + ' count';
-        });
-
-    function customXAxis(g) {
-        g.call(xAxis);
-        g.select('.domain').remove();
-        g.selectAll('.tick text').attr('transform', 'rotate(-80)').attr('y', 6).attr('dy', '-0.1em').attr('dx', '-3.0em');
-    }
-
-    function customYAxis(g) {
-        g.call(yAxis);
-        g.select('.domain').remove();
-        g.selectAll('.tick:not(:first-of-type) line').attr('stroke', '#000000').attr('stroke-dasharray', '2,2');
-        g.selectAll('.tick text').attr('x', -20).attr('dy', -4);
-    }
-
-    g.append('g')
-        .attr('transform', 'translate(0,' + height + ')')
-        .call(customXAxis);
-
-    g.append('g')
-        .call(customYAxis);
-
-    let colors = d3.scaleOrdinal(d3.schemeCategory10);
-    let tooltip = d3.select('body').append('div').attr('class', 'toolTip');
-
-    g.selectAll('.bar')
-        .data(dataObj)
-        .enter().append('rect')
-        .attr('class', 'bar')
-        .attr('x', d => x(d.shape))
-        .attr('y', height)
-        .on('mousemove', d => {
-            tooltip
-                .style('left', d3.event.pageX - 50 + 'px')
-                .style('top', d3.event.pageY - 70 + 'px')
-                .style('display', 'inline-block')
-                .html((d.shape) + '<br>' + (d.count) + ' ' +'('+ ((d.count/80332)*100).toFixed(0) + '%)' +' UFOs');
-        })
-        .on('mouseout', () => {
-            tooltip.style('display', 'none');
-        })
-        .attr('width', x.bandwidth())
-        .style('fill', (d, i) => colors(i))
-        .attr('height', 0)
-        .transition()
-        .duration(200)
-        .delay((d,i) => i * 50)
-        .attr('y', d => y(d.count))
-        .attr('height', d => height - y(d.count))
-        .style('fill', (d, i) => colors(i));
-}
-
-function plotUfosByCountry(data) {
-
-    d3.select("#plot-ufos-title").html("UFOs by country");
-
-    let svg = d3.select('#plot-ufos');
-    svg.selectAll("*").remove();
-
-    let counts = {};
-
-    data.forEach(d => {
-        switch (d.country) {
-            case ("AU" || "Australia"):
-                d.country = "Australia";
-                break;
-            case ("DE" || "Germany"):
-                d.country = "Germany";
-                break;
-            case ("CA" || "Canada"):
-                d.country = "Canada";
-                break;
-            case ("GB" || "Great Britain"):
-                d.country = "Great Britain";
-                break;
-            case ("US" || "United States"):
-                d.country = "United States";
-                break;
-            case (""):
-                d.country = "N/A";
-                break;
-            default:
-                break;
-        }
-        if (!counts[d.country]) {
-            counts[d.country] = 0;
-        }
-        counts[d.country]++;
-    });
-
-    let dataObj = [];
-
-    Object.keys(counts).forEach(key => {
-        dataObj.push({
-            country: key,
-            count: counts[key]
-        });
-    });
-
-    dataObj.forEach(d => {
-        //d.state = d.state.toUpperCase();
-        d.count = +d.count;
-    });
-
-    let margin = {top: 20, right: 20, bottom: 60, left: 40},
-        width = +svg.attr('width') - margin.left - margin.right,
-        height = +svg.attr('height') - margin.top - margin.bottom;
-
-    let g = svg.append('g')
-        .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
-
-    let x = d3.scaleBand().rangeRound([0, width]).padding(0.1)
-        .domain(dataObj.map(d => d.country));
-
-    let y = d3.scaleLinear().rangeRound([height, 0])
-        .domain([0, d3.max(dataObj, d => d.count)]).nice();
-
-    let xAxis = d3.axisBottom(x)
-        .ticks(d3.datetime);
-
-    let yAxis = d3.axisRight(y)
-        .tickSize(width)
-        .tickFormat(function (d) {
-            return this.parentNode.nextSibling
-                ? '\xa0' + d
-                : d + ' count';
-        });
-
-    function customXAxis(g) {
-        g.call(xAxis);
-        g.select('.domain').remove();
-        g.selectAll('.tick text').attr('transform', 'rotate(0)').attr('y', 6).attr('dy', '1.9em').attr('dx', '0em');
-    }
-
-    function customYAxis(g) {
-        g.call(yAxis);
-        g.select('.domain').remove();
-        g.selectAll('.tick:not(:first-of-type) line').attr('stroke', '#000000').attr('stroke-dasharray', '2,2');
-        g.selectAll('.tick text').attr('x', -20).attr('dy', -4);
-    }
-
-    g.append('g')
-        .attr('transform', 'translate(0,' + height + ')')
-        .call(customXAxis);
-
-    g.append('g')
-        .call(customYAxis);
-
-    let colors = d3.scaleOrdinal(d3.schemeCategory20);
-    let tooltip = d3.select('body').append('div').attr('class', 'toolTip');
-
-    g.selectAll('.bar')
-        .data(dataObj)
-        .enter().append('rect')
-        .attr('class', 'bar')
-        .attr('x', d => x(d.country))
-        .attr('y', height)
-        .on('mousemove', d => {
-            tooltip
-                .style('left', d3.event.pageX - 50 + 'px')
-                .style('top', d3.event.pageY - 70 + 'px')
-                .style('display', 'inline-block')
-                .html((d.country) + '<br>' + (d.count) + ' ' +'('+ ((d.count/80332)*100).toFixed(0) + '%)' +' UFOs');
-        })
-        .on('mouseout', () => {
-            tooltip.style('display', 'none');
-        })
-        .attr('width', x.bandwidth())
-        .style('fill', (d, i) => colors(i))
-        .attr('height', 0)
-        .transition()
-        .duration(200)
-        .delay((d,i) => i * 50)
-        .attr('y', d => y(d.count))
-        .attr('height', d => height - y(d.count));
-}
-
-function plotUfosByYear(data) {
-
-    d3.select("#plot-ufos-title").html("UFOs by year");
-
-    let svg = d3.select('#plot-ufos');
-    svg.selectAll("*").remove();
-
-    let counts = {};
-
-    data.forEach(d => {
-        if (!counts[d.year]) {
-            counts[d.year] = 0;
-        }
-        counts[d.year]++;
-    });
-
-    let dataObj = [];
-
-    Object.keys(counts).forEach(key => {
-        dataObj.push({
-            dt: key,
-            count: counts[key]
-        });
-    });
-
-    let margin = {top: 20, right: 20, bottom: 60, left: 40},
-        width = +svg.attr('width') - margin.left - margin.right,
-        height = +svg.attr('height') - margin.top - margin.bottom;
-
-    let g = svg.append('g')
-        .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
-
-    let x = d3.scaleBand().rangeRound([0, width]).padding(0.1)
-        .domain(dataObj.map(d => d.dt));
-
-    let y = d3.scaleLinear().rangeRound([height, 0])
-        .domain([0, d3.max(dataObj, d => d.count)]).nice();
-
-    let xAxis = d3.axisBottom(x)
-        .ticks(d3.dt);
-
-    let yAxis = d3.axisRight(y)
-        .tickSize(width)
-        .tickFormat(function (d) {
-            return this.parentNode.nextSibling
-                ? '\xa0' + d
-                : d + ' count';
-        });
-
-    function customXAxis(g) {
-        g.call(xAxis);
-        g.select('.domain').remove();
-        g.selectAll('.tick text').attr('transform', 'rotate(-80)').attr('y', 6).attr('dy', '-0.1em').attr('dx', '-2.0em');
-    }
-
-    function customYAxis(g) {
-        g.call(yAxis);
-        g.select('.domain').remove();
-        g.selectAll('.tick:not(:first-of-type) line').attr('stroke', '#000000').attr('stroke-dasharray', '2,2');
-        g.selectAll('.tick text').attr('x', -20).attr('dy', -4);
-    }
-
-    g.append('g')
-        .attr('transform', 'translate(0,' + height + ')')
-        .call(customXAxis);
-
-    g.append('g')
-        .call(customYAxis);
-
-    let colorScale = d3.scaleQuantile()
-        .domain([0, d3.max(dataObj, d => d.count)])
-        .range(d3.schemeCategory20);
-    let tooltip = d3.select('body').append('div').attr('class', 'toolTip');
-
-    g.selectAll('.bar')
-        .data(dataObj)
-        .enter().append('rect')
-        .attr('class', 'bar')
-        .attr('x', d => x(d.dt))
-        .attr('y', height)
-        .on('mousemove', d => {
-            tooltip
-                .style('left', d3.event.pageX - 50 + 'px')
-                .style('top', d3.event.pageY - 70 + 'px')
-                .style('display', 'inline-block')
-                .html((d.dt) + '<br>' + (d.count) + ' ' +'('+ ((d.count/80332)*100).toFixed(0) + '%)' +' UFOs');
-        })
-        .on('mouseout', () => {
-            tooltip.style('display', 'none');
-        })
-        .attr('width', x.bandwidth())
-        .attr('height', 0)
-        .transition()
-        .duration(200)
-        .delay((d,i) => i * 50)
-        .attr('y', d => y(d.count))
-        .attr('height', d => height - y(d.count))
-        .style("fill", (d,i) => colorScale(d.count));
-}
-
-function plotUfosByMonth(data) {
-
-    d3.select("#plot-ufos-title").html("UFOs by month");
-
-    let svg = d3.select('#plot-ufos');
-    svg.selectAll("*").remove();
-
-    let counts = {};
-
-    data.forEach(d => {
-        if (!counts[d.month]) {
-            counts[d.month] = 0;
-        }
-        counts[d.month]++;
-    });
-
-    let dataObj = [];
-
-    Object.keys(counts).forEach(key => {
-        dataObj.push({
-            dt: monthLetter[key],
-            count: counts[key]
-        });
-    });
-
-    let margin = {top: 20, right: 20, bottom: 60, left: 40},
-        width = +svg.attr('width') - margin.left - margin.right,
-        height = +svg.attr('height') - margin.top - margin.bottom;
-
-    let g = svg.append('g')
-        .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
-
-    let x = d3.scaleBand().rangeRound([0, width]).padding(0.1)
-        .domain(dataObj.map(d => d.dt));
-
-    let y = d3.scaleLinear().rangeRound([height, 0])
-        .domain([0, d3.max(dataObj, d => d.count)]).nice();
-
-    let xAxis = d3.axisBottom(x)
-        .ticks(d3.dt);
-
-    let yAxis = d3.axisRight(y)
-        .tickSize(width)
-        .tickFormat(function (d) {
-            return this.parentNode.nextSibling
-                ? '\xa0' + d
-                : d + ' count';
-        });
-
-    function customXAxis(g) {
-        g.call(xAxis);
-        g.select('.domain').remove();
-        g.selectAll('.tick text').attr('transform', 'rotate(0)').attr('y', 6).attr('dy', '1.9em').attr('dx', '0em');
-    }
-
-    function customYAxis(g) {
-        g.call(yAxis);
-        g.select('.domain').remove();
-        g.selectAll('.tick:not(:first-of-type) line').attr('stroke', '#000000').attr('stroke-dasharray', '2,2');
-        g.selectAll('.tick text').attr('x', -20).attr('dy', -4);
-    }
-
-    g.append('g')
-        .attr('transform', 'translate(0,' + height + ')')
-        .call(customXAxis);
-
-    g.append('g')
-        .call(customYAxis);
-
-    let colorScale = d3.scaleQuantile()
-        .domain([0, d3.max(dataObj, d => d.count)])
-        .range(d3.schemeCategory10);
-    let tooltip = d3.select('body').append('div').attr('class', 'toolTip');
-
-    g.selectAll('.bar')
-        .data(dataObj)
-        .enter().append('rect')
-        .attr('class', 'bar')
-        .attr('x', d => x(d.dt))
-        .attr('y', height)
-        .on('mousemove', d => {
-            tooltip
-                .style('left', d3.event.pageX - 50 + 'px')
-                .style('top', d3.event.pageY - 70 + 'px')
-                .style('display', 'inline-block')
-                .html((d.dt) + '<br>' + (d.count) + ' ' +'('+ ((d.count/80332)*100).toFixed(0) + '%)' +' UFOs');
-        })
-        .on('mouseout', () => {
-            tooltip.style('display', 'none');
-        })
-        .attr('width', x.bandwidth())
-        .attr('height', 0)
-        .transition()
-        .duration(200)
-        .delay((d,i) => i * 50)
-        .attr('y', d => y(d.count))
-        .attr('height', d => height - y(d.count))
-        .style("fill", (d,i) => colorScale(d.count));
-}
-
-function plotUfosByDay(data) {
-
-    d3.select("#plot-ufos-title").html("UFOs by day");
-
-    let svg = d3.select('#plot-ufos');
-    svg.selectAll("*").remove();
-
-    let counts = {};
-
-    data.forEach(d => {
-        if (!counts[d.day]) {
-            counts[d.day] = 0;
-        }
-        counts[d.day]++;
-    });
-
-    let dataObj = [];
-
-    Object.keys(counts).forEach(key => {
-        dataObj.push({
-            dt: dayLetter[key],
-            count: counts[key]
-        });
-    });
-
-    let margin = {top: 20, right: 20, bottom: 60, left: 40},
-        width = +svg.attr('width') - margin.left - margin.right,
-        height = +svg.attr('height') - margin.top - margin.bottom;
-
-    let g = svg.append('g')
-        .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
-
-    let x = d3.scaleBand().rangeRound([0, width]).padding(0.1)
-        .domain(dataObj.map(d => d.dt));
-
-    let y = d3.scaleLinear().rangeRound([height, 0])
-        .domain([0, d3.max(dataObj, d => d.count)]).nice();
-
-    let xAxis = d3.axisBottom(x)
-        .ticks(d3.dt);
-
-    let yAxis = d3.axisRight(y)
-        .tickSize(width)
-        .tickFormat(function (d) {
-            return this.parentNode.nextSibling
-                ? '\xa0' + d
-                : d + ' count';
-        });
-
-    function customXAxis(g) {
-        g.call(xAxis);
-        g.select('.domain').remove();
-        g.selectAll('.tick text').attr('transform', 'rotate(0)').attr('y', 6).attr('dy', '1.9em').attr('dx', '0em');
-    }
-
-    function customYAxis(g) {
-        g.call(yAxis);
-        g.select('.domain').remove();
-        g.selectAll('.tick:not(:first-of-type) line').attr('stroke', '#000000').attr('stroke-dasharray', '2,2');
-        g.selectAll('.tick text').attr('x', -20).attr('dy', -4);
-    }
-
-    g.append('g')
-        .attr('transform', 'translate(0,' + height + ')')
-        .call(customXAxis);
-
-    g.append('g')
-        .call(customYAxis);
-
-    let colorScale = d3.scaleQuantile()
-        .domain([0, d3.max(dataObj, d => d.count)])
-        .range(d3.schemeCategory20);
-    let tooltip = d3.select('body').append('div').attr('class', 'toolTip');
-
-    g.selectAll('.bar')
-        .data(dataObj)
-        .enter().append('rect')
-        .attr('class', 'bar')
-        .attr('x', d => x(d.dt))
-        .attr('y', height)
-        .on('mousemove', d => {
-            tooltip
-                .style('left', d3.event.pageX - 50 + 'px')
-                .style('top', d3.event.pageY - 70 + 'px')
-                .style('display', 'inline-block')
-                .html((d.dt) + '<br>' + (d.count) + ' ' +'('+ ((d.count/80332)*100).toFixed(0) + '%)' +' UFOs');
-        })
-        .on('mouseout', () => {
-            tooltip.style('display', 'none');
-        })
-        .attr('width', x.bandwidth())
-        .attr('height', 0)
-        .transition()
-        .duration(200)
-        .delay((d,i) => i * 50)
-        .attr('y', d => y(d.count))
-        .attr('height', d => height - y(d.count))
-        .style("fill", (d,i) => colorScale(d.count));
-}
-
 // Source: http://techslides.com/d3-map-starter-kit
 function initMap(data) {
-
-    d3.select(window).on('resize', throttle);
-
-    let shapes = getUniqueShapes(data);
-
-    let shapeColor = d3.scaleOrdinal(d3.schemeCategory10);
 
     drawMapLegend();
 
@@ -621,30 +92,25 @@ function initMap(data) {
 
     setup(width, height);
 
-    function getUniqueShapes(data) {
-        let x = Array.from(new Set(data.map(d => d.shape)));
-        x.splice(x.indexOf(""), 1);
-        return x;
-    }
-
     function drawMapLegend() {
         let g = d3.select('#map-legend')
             .attr('height', 500)
-            .attr('width', 180);
+            .attr('width', 180)
+            .attr('transform', 'translate(0,20)');
         let dg = g.selectAll('circle')
             .data(shapes).enter();
 
         dg.append('circle')
-            .attr('cx', (_, i) => i%2 === 0 ? 100 : 10)
-            .attr('cy', (_, i) => i%2 === 0 ? 15 * (i-1) + 10 : 15 * i + 10)
+            .attr('cx', (_, i) => i%2 === 1 ? 100 : 10)
+            .attr('cy', (_, i) => i%2 === 1 ? 15 * (i-1) + 10 : 15 * i + 10)
             .attr('r', 5)
             .style('fill', (_, i) => shapeColor(i));
 
         dg.append('text')
             .attr('class', 'map-legend-text')
-            .attr('x', (_, i) => i%2 === 0 ? 110 : 20)
-            .attr('y', (_, i) => i%2 === 0 ? 15 * (i-1) + 13 : 15 * i + 13)
-            .text(d => d);
+            .attr('x', (_, i) => i%2 === 1 ? 110 : 20)
+            .attr('y', (_, i) => i%2 === 1 ? 15 * (i-1) + 13 : 15 * i + 13)
+            .text(d => d.shape);
     }
 
     function setup(width, height) {
@@ -706,16 +172,6 @@ function initMap(data) {
         centerTransform = d3.zoomIdentity.translate(translate[0],translate[1]).scale(1);
 
         svg.transition().call(zoom.transform, centerTransform);
-
-        // addPoints(data.slice(0, 100));
-    }
-
-    function redraw() {
-        width = c.offsetWidth;
-        height = width / 2;
-        d3.select('svg').remove();
-        setup(width, height);
-        draw(topo);
     }
 
     function move() {
@@ -742,16 +198,6 @@ function initMap(data) {
         d3.selectAll('.country').style('stroke-width', .5 / s);
 
     }
-
-    let throttleTimer;
-
-    function throttle() {
-        window.clearTimeout(throttleTimer);
-        throttleTimer = window.setTimeout(() => {
-            redraw();
-        }, 200);
-    }
-
 
     // Country zoom and center
     // source: https://bl.ocks.org/iamkevinv/0a24e9126cd2fa6b283c6f2d774b69a2
@@ -802,9 +248,9 @@ function initMap(data) {
             .attr('cx', d => projection([d.longitude, d.latitude])[0])
             .attr('cy', d => projection([d.longitude, d.latitude])[1])
             .attr('r', d => scaleDuration(d.duration_sec))
-            .style('fill', d => d.shape === "" ? shapeColor(shapes.indexOf("unknown")) : shapeColor(shapes.indexOf(d.shape)))
+            .style('fill', d => shapeColor(shapes.findIndex(s => d.shape === s.shape)))
             .on('mouseover', d => handleMouseOver(d.dt.toLocaleString() + '<br />' + d.city
-                + (d.state ? ', ' : '') + d.state + (d.country ? ', ' : '') + d.country + '<br />' + d.comments))
+                + (d.state ? ', ' : '') + d.state + (d.country ? ', ' : '') + d.country + '<br />Shape: ' + d.shape + '<br />' + d.comments))
             .on('mouseout', handleMouseOut)
             .style('opacity', 0.0)
             .transition()
@@ -923,7 +369,7 @@ function initMap(data) {
         setProgressBar(0.0);
     }
 
-// distance must be in %
+    // distance must be in %
     function setProgressBar(distance) {
         $('.timeline-progress').width(distance + '%');
         $('.progress-indicator').css({paddingLeft: distance + '%'});

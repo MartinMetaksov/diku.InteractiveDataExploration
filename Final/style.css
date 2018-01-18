@@ -186,6 +186,7 @@ div.tooltip {
     opacity: 0.9;
     position: absolute;
     user-select: none;
+    font-size: 10pt;
 }
 
 .gpoint {
