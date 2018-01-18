@@ -12,7 +12,6 @@ let ufoData,
     monthLetter = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
     dayLetter = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
-
 function init() {
     plotVisualizations('scrubbed');
 }
@@ -27,8 +26,8 @@ function plotVisualizations(db) {
             data.forEach(d => {
                 d.dt = new Date(d.dt);
                 d.year = d.dt.getFullYear();
-                d.month = monthLetter[d.dt.getMonth()];
-                d.day = dayLetter[d.dt.getDay()];
+                d.month = d.dt.getMonth();
+                d.day = d.dt.getDay();
                 d.duration_sec = +d.duration_sec || 0;
                 d.city = d.city.capitalize();
                 d.state = d.state.length <= 3 ? d.state.toUpperCase() : d.state.capitalize();
@@ -152,7 +151,7 @@ function plotUfosByShape(data) {
                 .style('left', d3.event.pageX - 50 + 'px')
                 .style('top', d3.event.pageY - 70 + 'px')
                 .style('display', 'inline-block')
-                .html((d.shape) + '<br>' + (d.count) + ' UFOs');
+                .html((d.shape) + '<br>' + (d.count) + ' ' +'('+ ((d.count/80332)*100).toFixed(0) + '%)' +' UFOs');
         })
         .on('mouseout', () => {
             tooltip.style('display', 'none');
@@ -278,7 +277,7 @@ function plotUfosByCountry(data) {
                 .style('left', d3.event.pageX - 50 + 'px')
                 .style('top', d3.event.pageY - 70 + 'px')
                 .style('display', 'inline-block')
-                .html((d.country) + '<br>' + (d.count) + ' UFOs');
+                .html((d.country) + '<br>' + (d.count) + ' ' +'('+ ((d.count/80332)*100).toFixed(0) + '%)' +' UFOs');
         })
         .on('mouseout', () => {
             tooltip.style('display', 'none');
@@ -292,7 +291,6 @@ function plotUfosByCountry(data) {
         .attr('y', d => y(d.count))
         .attr('height', d => height - y(d.count));
 }
-
 
 function plotUfosByYear(data) {
 
@@ -379,7 +377,7 @@ function plotUfosByYear(data) {
                 .style('left', d3.event.pageX - 50 + 'px')
                 .style('top', d3.event.pageY - 70 + 'px')
                 .style('display', 'inline-block')
-                .html((d.dt) + '<br>' + (d.count) + ' UFOs');
+                .html((d.dt) + '<br>' + (d.count) + ' ' +'('+ ((d.count/80332)*100).toFixed(0) + '%)' +' UFOs');
         })
         .on('mouseout', () => {
             tooltip.style('display', 'none');
@@ -414,7 +412,7 @@ function plotUfosByMonth(data) {
 
     Object.keys(counts).forEach(key => {
         dataObj.push({
-            dt: key,
+            dt: monthLetter[key],
             count: counts[key]
         });
     });
@@ -479,7 +477,7 @@ function plotUfosByMonth(data) {
                 .style('left', d3.event.pageX - 50 + 'px')
                 .style('top', d3.event.pageY - 70 + 'px')
                 .style('display', 'inline-block')
-                .html((d.dt) + '<br>' + (d.count) + ' UFOs');
+                .html((d.dt) + '<br>' + (d.count) + ' ' +'('+ ((d.count/80332)*100).toFixed(0) + '%)' +' UFOs');
         })
         .on('mouseout', () => {
             tooltip.style('display', 'none');
@@ -514,7 +512,7 @@ function plotUfosByDay(data) {
 
     Object.keys(counts).forEach(key => {
         dataObj.push({
-            dt: key,
+            dt: dayLetter[key],
             count: counts[key]
         });
     });
@@ -579,7 +577,7 @@ function plotUfosByDay(data) {
                 .style('left', d3.event.pageX - 50 + 'px')
                 .style('top', d3.event.pageY - 70 + 'px')
                 .style('display', 'inline-block')
-                .html((d.dt) + '<br>' + (d.count) + ' UFOs');
+                .html((d.dt) + '<br>' + (d.count) + ' ' +'('+ ((d.count/80332)*100).toFixed(0) + '%)' +' UFOs');
         })
         .on('mouseout', () => {
             tooltip.style('display', 'none');
@@ -593,8 +591,6 @@ function plotUfosByDay(data) {
         .attr('height', d => height - y(d.count))
         .style("fill", (d,i) => colorScale(d.count));
 }
-
-
 
 // Source: http://techslides.com/d3-map-starter-kit
 function initMap(data) {
