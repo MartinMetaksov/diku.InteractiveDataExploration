@@ -13,7 +13,7 @@ let ufoData,
     shapeColor = d3.scaleOrdinal(d3.schemeCategory20);
 
 function init() {
-    plotVisualizations('scrubbed');
+    plotVisualizations('dataset');
 }
 
 function plotVisualizations(db) {
@@ -30,32 +30,10 @@ function plotVisualizations(db) {
                 d.year = d.dt.getFullYear();
                 d.month = d.dt.getMonth();
                 d.day = d.dt.getDay();
-                d.duration_sec = +d.duration_sec || 0;
-                d.city = d.city.capitalize();
-                d.state = d.state.length <= 3 ? d.state.toUpperCase() : d.state.capitalize();
-                d.country = d.country.length <= 3 ? d.country.toUpperCase() : d.country.capitalize();
+                d.duration_sec = +d.duration_sec;
                 d.latitude = +d.latitude;
                 d.longitude = +d.longitude;
-                d.shape = d.shape || "unknown";
                 shapeCounts.set(d.shape, (shapeCounts.get(d.shape) || 0) + 1);
-
-                switch (d.country) {
-                    case ("AU" || "Australia"):
-                        d.country = "Australia";
-                        break;
-                    case ("DE" || "Germany"):
-                        d.country = "Germany";
-                        break;
-                    case ("CA" || "Canada"):
-                        d.country = "Canada";
-                        break;
-                    case ("GB" || "Great Britain"):
-                        d.country = "Great Britain";
-                        break;
-                    case ("US" || "United States"):
-                        d.country = "United States";
-                        break;
-                }
             });
             // Shapes sorted by count
             shapes = Array.from(shapeCounts, d => ({shape: d[0], count: d[1]})).sort((a, b) => b.count - a.count);
@@ -70,7 +48,7 @@ function plotVisualizations(db) {
 }
 
 // Source: http://techslides.com/d3-map-starter-kit
-function initMap(data) {
+function initMap() {
 
     drawMapLegend();
 

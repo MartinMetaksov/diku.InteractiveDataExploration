@@ -125,6 +125,9 @@ function plotUfosByCountry(data) {
         });
     });
     dataObj.sort((a, b) => b.count - a.count);
+    dataObj.length = 10;
+
+    console.log(dataObj);
 
     let margin = {top: 20, right: 20, bottom: 60, left: 40},
         width = +svg.attr('width') - margin.left - margin.right,
@@ -160,7 +163,7 @@ function plotUfosByCountry(data) {
         g.call(yAxis);
         g.select('.domain').remove();
         g.selectAll('.tick:not(:first-of-type) line').attr('stroke', '#000000').attr('stroke-dasharray', '2,2');
-        g.selectAll('.tick text').attr('x', -20).attr('dy', -4);
+        g.selectAll('.tick text').attr('x', -30).attr('dy', -4);
     }
 
     g.append('g')
@@ -257,7 +260,7 @@ function plotUfosByYear(data) {
         g.call(yAxis);
         g.select('.domain').remove();
         g.selectAll('.tick:not(:first-of-type) line').attr('stroke', '#000000').attr('stroke-dasharray', '2,2');
-        g.selectAll('.tick text').attr('x', -20).attr('dy', -4);
+        g.selectAll('.tick text').attr('x', -30).attr('dy', -4);
     }
 
     g.append('g')
@@ -354,7 +357,7 @@ function plotUfosByMonth(data) {
         g.call(yAxis);
         g.select('.domain').remove();
         g.selectAll('.tick:not(:first-of-type) line').attr('stroke', '#000000').attr('stroke-dasharray', '2,2');
-        g.selectAll('.tick text').attr('x', -20).attr('dy', -4);
+        g.selectAll('.tick text').attr('x', -30).attr('dy', -4);
     }
 
     g.append('g')
@@ -454,7 +457,7 @@ function plotUfosByDay(data) {
         g.call(yAxis);
         g.select('.domain').remove();
         g.selectAll('.tick:not(:first-of-type) line').attr('stroke', '#000000').attr('stroke-dasharray', '2,2');
-        g.selectAll('.tick text').attr('x', -20).attr('dy', -4);
+        g.selectAll('.tick text').attr('x', -30).attr('dy', -4);
     }
 
     g.append('g')
