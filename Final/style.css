@@ -197,11 +197,6 @@ div.tooltip {
     fill: red;
 }
 
-.container-fluid {
-    margin-left: 20px !important;
-    margin-right: 20px !important;
-}
-
 .map-legend-text {
     font-size: 11px;
 }
