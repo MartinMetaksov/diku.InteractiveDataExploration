@@ -10,7 +10,9 @@ let ufoData,
     interval,
     datetimeDimension,
     shapes,
-    shapeColor = d3.scaleOrdinal(d3.schemeCategory20);
+    shapeColor = d3.scaleOrdinal(d3.schemeCategory20),
+    zoomToUsa,
+    playInterval;
 
 function setUpScrollEvents() {
     let dataExplorationPos = $('#data-exploration-start').position().top;
@@ -78,8 +80,6 @@ function plotVisualizations(db) {
             plotUfos('shapes');
         });
 }
-
-let zoomToUsa;
 
 // Source: http://techslides.com/d3-map-starter-kit
 function initMap() {
@@ -441,6 +441,14 @@ function initMap() {
             clearInterval(interval);
             interval = undefined;
         }
+    }
+
+    playInterval = function(s, e) {
+        // e.g. s or e can be '03/04/2013'
+        $('#dtpicker-start').data("DateTimePicker").date(s);
+        $('#dtpicker-end').data("DateTimePicker").date(e);
+        $('#link-map').click();
+        play();
     }
 
 }
