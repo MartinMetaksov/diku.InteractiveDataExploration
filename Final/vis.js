@@ -79,6 +79,8 @@ function plotVisualizations(db) {
         });
 }
 
+let zoomToUsa;
+
 // Source: http://techslides.com/d3-map-starter-kit
 function initMap() {
 
@@ -96,7 +98,7 @@ function initMap() {
     let offsetL = c.offsetLeft + 20;
     let offsetT = c.offsetTop + 10;
 
-    let topo, projection, path, svg, g, centerTransform;
+    let topo, projection, path, svg, g, centerTransform, mexico;
 
     let tooltip = d3.select('#map-container').append('div').attr('class', 'tooltip hidden');
 
@@ -182,6 +184,9 @@ function initMap() {
         centerTransform = d3.zoomIdentity.translate(translate[0],translate[1]).scale(1);
 
         svg.transition().call(zoom.transform, centerTransform);
+
+        // Save Mexican bounds
+        mexico = topo.find(d => d.id === 141);
     }
 
     function move() {
@@ -231,13 +236,27 @@ function initMap() {
             .call(zoom.transform, d3.zoomIdentity.translate(translate[0],translate[1]).scale(scale));
     }
 
-    function reset() {
+    zoomToUsa = function() {
+
+        // Can't get mainland USA bounds easily so partially zoom to Mexico and move up proportionally
+        let bounds = path.bounds(mexico),
+            dx = (bounds[1][0] - bounds[0][0]) * 1.9,
+            dy = bounds[1][1] - bounds[0][1],
+            x = (bounds[0][0] + bounds[1][0]) / 2 * 1.1,
+            y = (bounds[0][1] + bounds[1][1]) / 2 / 1.35,
+            scale = Math.max(1, Math.min(8, 0.9 / Math.max(dx / width, dy / height))),
+            translate = [width / 2 - scale * x, height / 2 - scale * y];
+
+        reset(d3.zoomIdentity.translate(translate[0], translate[1]).scale(scale));
+    };
+
+    function reset(transform = centerTransform) {
         active.classed('active', false);
         active = d3.select(null);
 
         svg.transition()
             .duration(750)
-            .call(zoom.transform, centerTransform);
+            .call(zoom.transform, transform);
     }
 
     function addPoints(data) {
@@ -425,8 +444,3 @@ function initMap() {
     }
 
 }
-
-String.prototype.capitalize = function(){
-    return this.replace(/\b\w/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
-};
-
