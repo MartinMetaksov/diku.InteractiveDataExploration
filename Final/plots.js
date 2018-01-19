@@ -1,18 +1,19 @@
 let monthLetter = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
     dayLetter = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
-function plotUfos() {
-    switch ($("#plot-selector").val()) {
-        case "country":
+function plotUfos(category) {
+
+    switch (category) {
+        case "countries":
             plotUfosByCountry(ufoData);
             break;
-        case "year":
+        case "years":
             plotUfosByYear(ufoData);
             break;
-        case "month":
+        case "months":
             plotUfosByMonth(ufoData);
             break;
-        case "day":
+        case "days":
             plotUfosByDay(ufoData);
             break;
         default:

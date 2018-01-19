@@ -12,7 +12,39 @@ let ufoData,
     shapes,
     shapeColor = d3.scaleOrdinal(d3.schemeCategory20);
 
+function setUpScrollEvents() {
+    let dataExplorationPos = $('#data-exploration-start').position().top;
+    let mapExplorationPos = $('#map-exploration-start').position().top;
+    let concExplorationPos = $('#conclusions-start').position().top;
+
+    $(window).scroll(function() {
+        let current = $(window).scrollTop();
+        if (current < dataExplorationPos) {
+            $('.sn-activatable').removeClass('sn-active');
+            $('#link-cont').addClass('sn-active')
+        } else if (current < mapExplorationPos) {
+            $('.sn-activatable').removeClass('sn-active');
+            $('#link-data').addClass('sn-active')
+        } else if (current < concExplorationPos) {
+            $('.sn-activatable').removeClass('sn-active');
+            $('#link-map').addClass('sn-active')
+        } else {
+            $('.sn-activatable').removeClass('sn-active');
+            $('#link-conc').addClass('sn-active')
+        }
+    });
+
+    $(document).on('click', 'a[href^="#"]', function (event) {
+        event.preventDefault();
+
+        $('html, body').animate({
+            scrollTop: $($.attr(this, 'href')).offset().top
+        }, 500);
+    });
+}
+
 function init() {
+    setUpScrollEvents();
     plotVisualizations('dataset');
 }
 
@@ -43,7 +75,7 @@ function plotVisualizations(db) {
 
 
             initMap(ufoData);
-            plotUfos();
+            plotUfos('shapes');
         });
 }
 
@@ -241,7 +273,7 @@ function initMap() {
                 .duration(600)
                 .style('opacity', 0.0)
                 .remove();
-        }, 2000);
+        }, 1000);
     }
 
     /*

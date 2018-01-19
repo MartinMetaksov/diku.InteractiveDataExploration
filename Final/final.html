@@ -7,7 +7,7 @@
     <title>UFO Sightings | IDE</title>
 
     <link rel="stylesheet" type="text/css" href="style.css">
-    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.min.css">
     <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css" rel="stylesheet">
@@ -24,202 +24,242 @@
 </head>
 
 <body>
-<div class="container-fluid">
+<div class="container-fluid newspaper-style">
+    <div id="context-start"></div>
     <div class="row">
         <div class="col-md-12">
+            <br>
             <h2 class="centered">Final Project - UFO Sightings</h2>
+            <br><br>
         </div>
+    </div>
+    <div class="side-nav">
+        <ul>
+            <li><a id="link-conc" class="sn-activatable" href="#conclusions-start">Conclusions</a></li>
+            <li><a id="link-map" class="sn-activatable" href="#map-exploration-start">Map exploration</a></li>
+            <li><a id="link-data" class="sn-activatable" href="#data-exploration-start">Data exploration</a></li>
+            <li><a id="link-cont" class="sn-active sn-activatable" href="#context-start">Context</a></li>
+        </ul>
     </div>
     <div class="row">
-        <div class="introduction-text col-md-8 offset-md-2">
-            <h3>UFO Context</h3>
-            <p>
-                When we think of a UFO, we often imagine things of science fiction, but we do not imagine that this can be a
-                serious subject.
-            </p>
-            <p>
-                However, during the month of December 2017, the <i><u>New York Times</u></i> revealed that between 2007 and 2012, the
-                Pentagon had spent hundreds of millions of dollars to fund a UFO research program (known as the <i>Blue Book
-                Project</i> between 1952 and 1969, and then known as <i><a target="_blank" href="https://youtu.be/EztiaVGDAjA">Glowing
-                Auras and Black Money)</a></i>.
-            </p>
-            <p>
-                These news surprised many people, but in reality the UFO obsession of the American government is very old
-                and dates back to 1947. Namely in that year, <b>Kenneth Arnold</b>, an American aviator, observed a swarm of
-                nine flying objects that he couldn't identify, and in a few days all the American press was interested in the story.
-            </p>
-            <p>
-                <img src="http://www.ufo.it/ufo/wp-content/uploads/2016/10/1947-06-27-SanAnotnioEx-TITOLONE-M.png" alt="" class="centered" />
-            </p>
-            <p>
-                In the years that followed, hundreds of Americans also claimed to have seen strange flying objects in
-                the sky and many mistook them for alien craft.
-            </p>
-            <p>
-                In response to all these testimonies, the US military decided to launch a large scientific study on UFOs
-                which have for main objective to find an explanation to their appearances. And the result was conclusive.
-            </p>
-            <p>
-                In fact, between 1952 and 1959, the US Air Force recorded twelve thousand incidents involving
-                unidentified flying objects and found a scientific explanation for 97% of these occurrences. However,
-                the possibility that UFOs are the manifestation of extraterrestrial threats continued to make its way.
-                In 1985, <b>President Ronald Reagan</b> said he was even ready to collaborate with the Soviet bloc in case
-                of an alien invasion.
-            </p>
-            <p>
-                Nowadays, following the revelations of the <i><u>New York Times</u></i>, the Pentagon claims that it no longer
-                investigates UFOs, but according to <b>Luis Elizondo</b>, the former director of the confidential program,
-                investigations are continuing today but in another form.
-            </p>
-            <h3>Project motivation</h3>
-            <p>
-                Inspired by the <i>Blue Book Project</i>, <i>Glowing Auras</i> and <i>Black Money</i>, we wanted to explore some of the
-                available <a target="_blank" href="https://www.kaggle.com/NUFORC/ufo-sightings/data">data</a> on the topic and hopefully
-                get some useful insights. The data set itself was rather large and provided a variety of different features,
-                such as date and time of a sighting, city, state, country, shape, duration, comments, latitude and longitude.
-                This implied that it would be quite difficult to obtain any useful information out of the data directly, as it would be
-                close to impossible to read every single of the 80000 rows of data and make any meaningful conclusions from it. Instead,
-                we have introduced a slightly different approach. By using interactive visualisations and creating a timeline of events,
-                we are showing only a limited number of sightings at a time. By doing this, we would be able to see whether some of the same UFO
-                shapes have been seen at close intervals of times and nearby locations. This would imply that more than one person
-                would have seen something that looked alike in the same area and at approximately the same time. Hypothetically, while the odds
-                that the sightings regard the exact same object are low and the probability of a coincidence is high, we could
-                still obtain a period of time and an object type, which we could then use to do further research.
-            </p>
-            <p>
-                UFO's have been an open topic for many years, and yet by this day it is very unclear whether the stories we have
-                read, heard or seen anywhere are even true or if they are just the creation of people's vivid imagination. Furthermore
-                people tend to imagine more when they have recently been introduced to the topic. For example, we would expect an increased number
-                of sightings during the period The X-files was being broadcast on TV. With this said, we believe that it is extremely
-                difficult (near impossible) to make precise and correct conclusions on this topic, thus our focus has been set on
-                making connections between events and registered sightings in the data set.
-            </p>
-            <h3>Visualizations and set up</h3>
-            <p>
-                The main visualization of the project is a world map with a timeline functionality. We have added the possibility of
-                choosing a start and an end date for sightings. The user can then play (by clicking the play button, or by pressing 's'
-                on their keyboard) the sequence and see sightings appearing on the map. We display a day of data each second, which we
-                believe was the optimal time mapping. A legend on the side represents the different shapes that have been registered
-                throughout the data set. Furthermore, each sighting is represented by a different size. This is linked to their duration,
-                where a smaller radius corresponds to a shorter sighting duration and a larger radius to a longer duration. Additionally,
-                each dot can be hovered, providing further information about a specific sighting, in order to allow users to pause the sequence
-                and compare different sightings.
-            </p>
-            <p>
-                The other visualizations are a complement to the map  and allow to extract quantitative data on UFOs. The different
-                visualizations proposed, can be chosen thanks to the drop-down list. Thus, it is possible to obtain information on
-                UFOs according to their shape, country, month and day of appearance, in order to attempt and obtain further
-                meaning from the other aspects of the data and help extract valuable conclusions in the end.
-            </p>
+        <div class="introduction-text col-md-6">
+            <div id="ufo-context">
+                <h3>UFO Context</h3>
+                <p>
+                    When we think of a UFO, we often imagine things of science fiction, but we do not imagine that this can be a
+                    serious subject.
+                </p>
+                <p>
+                    During the month of December 2017, the <i><u>New York Times</u></i> revealed that between 2007 and 2012, the
+                    Pentagon had spent hundreds of millions of dollars to fund a UFO research program (known as the <i>Blue Book
+                    Project</i> between 1952 and 1969, and then known as <i><a target="_blank" href="https://youtu.be/EztiaVGDAjA">Glowing
+                    Auras and Black Money)</a></i>.
+                </p>
+                <p>
+                    These news surprised many people, but in reality the UFO obsession of the American government is very old
+                    and dates back to 1947. Namely in that year, <b>Kenneth Arnold</b>, an American aviator, observed a swarm of
+                    nine flying objects that he couldn't identify, and in a few days all the American press was interested in the story.
+                </p>
+                <p>
+                    <img src="http://www.ufo.it/ufo/wp-content/uploads/2016/10/1947-06-27-SanAnotnioEx-TITOLONE-M.png" alt="" class="centered" />
+                </p>
+                <p>
+                    In the years that followed, hundreds of Americans also claimed to have seen strange flying objects in
+                    the sky and many mistook them for alien craft.
+                </p>
+                <p>
+                    In response to all these testimonies, the US military decided to launch a large scientific study on UFOs
+                    which have for main objective to find an explanation to their appearances. And the result was conclusive.
+                </p>
+                <p>
+                    In fact, between 1952 and 1959, the US Air Force recorded twelve thousand incidents involving
+                    unidentified flying objects and found a scientific explanation for 97% of these occurrences. However,
+                    the possibility that UFOs are the manifestation of extraterrestrial threats continued to make its way.
+                    In 1985, <b>President Ronald Reagan</b> said he was even ready to collaborate with the Soviet bloc in case
+                    of an alien invasion.
+                </p>
+                <p>
+                    Nowadays, following the revelations of the <i><u>New York Times</u></i>, the Pentagon claims that it no longer
+                    investigates UFOs, but according to <b>Luis Elizondo</b>, the former director of the confidential program,
+                    investigations are continuing today but in another form.
+                </p>
+            </div>
+        </div>
+        <div class="introduction-text col-md-6">
+            <div id="project-motivation">
+                <h3>Project motivation</h3>
+                <p>
+                    Inspired by the <i>Blue Book Project</i>, <i>Glowing Auras</i> and <i>Black Money</i>, we wanted to explore some of the
+                    available <a target="_blank" href="https://www.kaggle.com/NUFORC/ufo-sightings/data">data</a> on the topic and hopefully
+                    get some useful insights.
+                </p>
+                <p>
+                    The data set itself was rather large and provided a variety of different features,
+                    such as date and time of a sighting, city, state, country, shape, duration, comments, latitude and longitude.
+                    This implied that it would be quite difficult to obtain any useful information out of the data directly, as it would be
+                    close to impossible to read every single of the 80000 rows of data and make any meaningful conclusions from it.
+                </p>
+                <p>
+                    Instead, we have introduced a slightly different approach. By using interactive visualisations and creating a timeline of events,
+                    we are showing only a limited number of sightings at a time. By doing this, we would be able to see whether some of the same UFO
+                    shapes have been seen at close intervals of times and nearby locations. This would imply that more than one person
+                    would have seen something that looked alike in the same area and at approximately the same time.
+                </p>
+                <p>
+                    Hypothetically, while the odds
+                    that the sightings regard the exact same object are low and the probability of a coincidence is high, we could
+                    still obtain a period of time and an object type, which we could then use to do further research.
+                </p>
+                <p>
+                    UFO's have been an open topic for many years, and yet by this day it is very unclear whether the stories we have
+                    read, heard or seen anywhere are even true or if they are just the creation of people's vivid imagination. Furthermore
+                    people tend to imagine more when they have recently been introduced to the topic. For example, we would expect an increased number
+                    of sightings during the period The X-files was being broadcast on TV.
+                </p>
+                <p>
+                    With this said, we believe that it is extremely
+                    difficult (near impossible) to make precise and correct conclusions on this topic, thus our focus has been set on
+                    making connections between events and registered sightings in the data set.
+                </p>
+            </div>
+            <div id="visualisations-and-setup">
+                <h3>Visualizations and set up</h3>
+                <p>
+                    The main visualization of the project is a world map with a timeline functionality. We have added the possibility of
+                    choosing a start and an end date for sightings. The user can then play (by clicking the play button, or by pressing 's'
+                    on their keyboard) the sequence and see sightings appearing on the map. We display a day of data each second, which we
+                    believe was the optimal time mapping. A legend on the side represents the different shapes that have been registered
+                    throughout the data set. Furthermore, each sighting is represented by a different size. This is linked to their duration,
+                    where a smaller radius corresponds to a shorter sighting duration and a larger radius to a longer duration. Additionally,
+                    each dot can be hovered, providing further information about a specific sighting, in order to allow users to pause the sequence
+                    and compare different sightings.
+                </p>
+                <p>
+                    The other visualizations are a complement to the map  and allow to extract quantitative data on UFOs. The different
+                    visualizations proposed, can be chosen thanks to the drop-down list. Thus, it is possible to obtain information on
+                    UFOs according to their shape, country, month and day of appearance, in order to attempt and obtain further
+                    meaning from the other aspects of the data and help extract valuable conclusions in the end.
+                </p>
+            </div>
         </div>
     </div>
+    <div id="data-exploration-start" style="padding-top: 50px; !important;"></div>
     <!-- Bar char visualizations -->
+    <ul class="nav nav-tabs">
+        <li class="active"><a data-toggle="tab" data-target="#menu-shapes" onclick="plotUfos('shapes')">Shapes</a></li>
+        <li><a data-toggle="tab" data-target="#menu-countries" onclick="plotUfos('countries')">Countries</a></li>
+        <li><a data-toggle="tab" data-target="#menu-years" onclick="plotUfos('years')">Years</a></li>
+        <li><a data-toggle="tab" data-target="#menu-months" onclick="plotUfos('months')">Months</a></li>
+        <li><a data-toggle="tab" data-target="#menu-days" onclick="plotUfos('days')">Days</a></li>
+    </ul>
+
     <div class="plot-ufos-container">
         <div class="row">
-            <h2 id="plot-ufos-title" class="centered">UFOs by shape</h2>
-        </div>
-        <div class="row">
-            <svg id = "plot-ufos" class ="centered" width="960" height="500"></svg>
-        </div>
-        <div class="row-left">
-            <select id="plot-selector" name="plot" onchange="plotUfos()">
-                <option value ="shape" >UFOs by shape</option>
-                <option value ="country" >UFOs by country</option>
-                <option value ="year" >UFOs by year</option>
-                <option value ="month" >UFOs by month</option>
-                <option value ="day" >UFOs by day</option>
-            </select>
+            <div class="col-md-6">
+                <div class="row">
+                    <svg id = "plot-ufos" class ="centered" width="750" height="500"></svg>
+                </div>
+            </div>
+            <div class="col-md-6 tab-content">
+                <div class="introduction-text">
+                    <div id="menu-shapes" class="tab-pane fade in active">
+                        <h3>UFOs by shape</h3>
+                        <p>
+                            As said before, any unclassifiable appearance, find an explanation through physics. Thus, we can think of
+                            seeing a flying saucer while it could be a meteorite, a ball lightning or a nightclub laser. This explains why
+                            the light, circular, oval, fireballs, spherical, disks forms are among the most frequent forms of apparitions.
+                        </p>
+                        <p>
+                            There is also the phenomena of visual perceptions that are quite explicable. The autokinetic effect, for example,
+                            can make you confuse a bright star with a flying saucer. Indeed, the lack of visual point around a star gives
+                            you the impression that it moves when it is not, and this is due to small involuntary movements of the eyeball.
+                        </p>
+                        <p>
+                            Furthermore, classic forms such as spheres, circles, discs, oval forms are dominant because in the film
+                            and television culture almost all UFOs associated to alien craft are represented by these forms. That is
+                            an indirect influence on the visual perception of UFOs by society.
+                        </p>
+                        <p>
+                            More recently, it's the cigar UFO form that makes people talk about it. Indeed, on the 19 of October 2017,
+                            a mysterious long-limbed cigar-like asteroid was detected in our milky way. Called Oumuanua, "a messenger from afar"
+                            in Hawaii and comes from another solar system. From astrophysicist's memory, nothing of this kind has ever
+                            been observed. Nobody knows how to explain its totally unusual form. Is it an extraterrestrial civilization?
+                            Is he endowed with an intelligence beyond us? These are currently the questions many professors are asking themselves...
+                        </p>
+                    </div>
+                    <div id="menu-countries" class="tab-pane fade">
+                        <h3>UFOs by country</h3>
+                        <p>
+                            The whole world witnesses flying objects, which are sometimes unidentified. Nevertheless, we note that some
+                            areas are more conducive to the appearance of UFOs. They are called "UFO window areas" or "UFO portal". Based on the
+                            data set, North America seems to be such an area with 70904 UFOs recorded in the US and 3588 in Canada, which
+                            represent 92% of all UFOs in our database. However, this can also be explained by the fact that the US Air Force has
+                            had the primary role of identifying and recording UFO sightings since the end of 1947.
+                        </p>
+                        <p>
+                            Thus, the differences in human and financial means also explains this important gap between the United States
+                            and the rest of the world. Take, for example France, which has also had a study and information group on unidentified
+                            aerospace phenomena, for 40 years: the GEIPAN. Nevertheless, this group has human and financial mean far from its American
+                            counterpart. Indeed, the GEIPAN has only five permanent members and a network of a hundred people in France and Overseas
+                            funded and has funding well below the hundreds of million dollars spent by Americans.
+                        </p>
+                    </div>
+                    <div id="menu-years" class="tab-pane fade">
+                        <h3>UFOs by year</h3>
+                        <p>
+                            Naturally, we notice on this visualization that the first appearance of UFOs is well around the year 1947 which
+                            is considered as the year of the first major observation of a UFO. It follows, then a slight growth of about twenty
+                            UFOs per year until 1972 which must surely be due to the craze that followed the observation of UFOs of the 24th of June
+                            1947 and the establishment from the Blue Book Project. From 1972 to 1992 the number of UFO appearances remains stable.
+                            Nevertheless, since the years 93 begins a significant growth of the number of UFOs recorded each year. Indeed, we go from 309
+                            UFOs observed in 1993 to 7536 in 2012. We believe this is no coincidence.
+                        </p>
+                        <p>
+                            The reason for this growth may be due to the cinematographic and visual culture of the moment such as the American
+                            series <a target="_blank" href="http://www.imdb.com/title/tt0106179/?ref_=fn_al_tt_1"></a>X-files,which broadcasted its first
+                            9 seasons between the years 1993 and 2002 with an audience average of 15 million viewers per season at the first broadcast in
+                            the United States. The modernization of telecommunication means or the arrival of the modern internet, which makes it easier to
+                            report an appearance of a flying object, may explain the increase in reports in recent years. In addition, the appearance of
+                            drones and automatic cameras to monitor the sky up to 50km altitude could also be one of the factors of this growth.
+                        </p>
+                        <p>
+                            We believe that societal, cultural (movies, TV shows) and technological factors could have played an important role in the growth of
+                            UFO reporting.
+                        </p>
+                    </div>
+                    <div id="menu-months" class="tab-pane fade">
+                        <h3>UFOs by month</h3>
+                        <p>
+                            Most of the UFOs reported in the database are located in the United States and Western Europe. Knowing this
+                            information and the fact that according to the visualization the highest number of UFO reported is between the
+                            months of June to September, we can hypothesize that the climate could be one of the factors of this growth. In the regions observed,
+                            we note that these months correspond to the summer months. Thus, during this period people are more likely to spend time outdoors and
+                            even more able to observe one or more UFO(s). In addition, we can observe a constant decline as we return in the colder months and then
+                            thereafter a more or less constant growth as we go back in the months when the climate becomes again favorable to spend time outside.
+                        </p>
+                        <p>
+                            Furthermore, one of the possible other reasons for UFO reporting growth during the months of June, July,
+                            August and September could be annual leave. Indeed, these months represent historically the most favorable months
+                            to take vacations and consequently to spend more time outdoors as we know that the climate is generally more pleasant at this time of year.
+                        </p>
+                    </div>
+                    <div id="menu-days" class="tab-pane fade">
+                        <h3>UFOs by day</h3>
+                        <p>
+                            As can we can see from the bar chart, the closer we get to the week-end, the more UFOs are reported. Knowing,
+                            that the study areas of our database is mainly located in the United States and Western Europe and that the working days
+                            are in most cases from Monday to Friday and that the days of rest are from Saturday to Sunday, we can deduce that days of
+                            rest can have a positive influence on the number of reported UFOs. Thus, this may explain that Saturday is generally the day with the
+                            highest reporting rate of UFOs (18%) and the closer we get to the weekend, the higher the rate becomes.
+                        </p>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-    <div class="row">
-        <div class="introduction-text col-md-8 offset-md-2">
-            <h3>UFOs by shape</h3>
-            <p>
-                As said before, any unclassifiable appearance, find an explanation through physics. Thus, we can think of
-                seeing a flying saucer while it is a meteorite, a ball lightning or a nightclub laser. This explains why
-                the light, circular, oval, fireballs, spherical, disks forms are among the most frequent forms of apparitions.
-            </p>
-            <p>
-                There are also phenomena of visual perceptions that are quite explicable. The autokinetic effect for example
-                can make you confuse a bright star with a flying saucer. Indeed, the lack of visual point around a star gives
-                you the impression that it moves when it is not, and this is due to small involuntary movements of the eyeball.
-            </p>
-            <p>
-                Furthermore, classical forms such as spheres, circles, discs, oval forms are very present because in the film
-                and television culture almost all UFOs are associated to alien craft having one of these forms. Thus, it has
-                an indirect influence on the visual perception of UFOs by society.
-            </p>
-            <p>
-                But, more recently, it's the cigar UFO form that makes people talk about it. Indeed, on the 19 of October 2017,
-                a mysterious long-limbed cigar-like asteroid was detected in our milky way. Called Oumuanua, "a messager from afar"
-                in Hawaii and comes from another solar system.
-            </p>
-            <p>
-                From astrophysicist's memory, nothing of this kind has ever been observed. Nobody knows how to explain its
-                totally unusual form. Is it an extraterrestrial civilization? Is he endowed with an intelligence beyond us?
-                These are currently the questions many professors are asking themselves...
-            </p>
-            <h3>UFOs by country</h3>
-            <p>
-                The whole world witnesses flying objects, which are sometimes unidentified. Nevertheless, we note that some
-                areas are more conducive to the appearance of UFOs. They are called "UFO window areas" or "UFO portal". Thus,
-                the United States seems to be the continent of UFOs with 65114 UFOs recorded, which represent 81% of all UFOs in our database.
-                This can also be explained by the fact that the US Air Force has identified UFOs since the end of the year 1947
-                while the rest of the world was interested in the subject only later.
-            </p>
-            <p>
-                Thus, the differences in human and financial means also explains this important gap between the United States
-                and the rest of the world. Take, for example France, which has also had a study and information group on unidentified
-                aerospace phenomena, for 40 years: the GEIPAN. Nevertheless, this group has human and financial mean far from its American
-                counterpart. Indeed, the GEIPAN has only five permanent members and a network of a hundred people in France and Overseas
-                funded and has funding well below the hundreds of million dollars spent by Americans.
-            </p>
-            <h3>UFOs by year</h3>
-            <p>
-                Naturally, we notice on this visualization that the first appearance of UFOs is well around the year 1947 which
-                is considered as the year of the first major observation of UFOs. It follows, then a slight growth of about twenty
-                UFO per year until 1972 which must surely be due to the craze that followed the observation of UFO of the 24th of June
-                1947 and the establishment from the Blue Book Project. From 1972 to 1992 the number of UFO appearances remains stable.
-                Nevertheless, since the years 93 begins a significant growth of the number of UFOs recorded each year. Indeed, we go from 309
-                UFOs observed in 1993 to 7536 in 2012.
-            </p>
-            <p>
-                The reason for this growth may be due to the cinematographic and visual culture of the moment such as the American
-                series X-files, which currently has 11 seasons, and which broadcasted its first 9 seasons between the years 1993 and 2002
-                with an audience average of 15 million viewers per season at the first broadcast in the United States. The modernization of
-                telecommunication means or the arrival of the modern internet, which makes it easier to report an appearance of a flying object,
-                may explain the increase in reports in recent years. In addition, the appearance of drones and automatic cameras to monitor
-                the sky up to 50km altitude could also be one of the factors of this growth.
-            </p>
-            <p>
-                Thus, societal and cultural factors and also films-television series and technological factors could have played a
-                role in the growth of UFO reporting.
-            </p>
-            <h3>UFOs by month</h3>
-            <p>
-                Most of the UFOs reported in the database are located in the United States and Western Europe. Knowing this
-                information and the fact that according to the visualization the highest number of UFO reported is between the
-                months of June to September, we can hypothesize that the climate could be one of the factors of this growth. In the regions observed,
-                we note that these months correspond to the summer months. Thus, during this period people are more likely to spend time outdoors and
-                even more able to observe one or more UFO(s). In addition, we can observe a constant decline as we return in the colder months and then
-                thereafter a more or less constant growth as we go back in the months when the climate becomes again favorable to spend time outside.
-            </p>
-            <p>
-                Furthermore, one of the possible other reasons for UFO reporting growth during the months of June, July,
-                August and September could be annual leave. Indeed, these months represent historically the most favorable months
-                to take vacations and consequently to spend more time outdoors as we know that the climate is generally more pleasant at this time of year.
-            </p>
-            <h3>UFOs by day</h3>
-            <p>
-                As can we can see from the bar chart, the closer we get to the week-end, the more UFOs are reported. Knowing,
-                that the study areas of our database is mainly located in the United States and Western Europe and that the working days
-                are in most cases from Monday to Friday and that the days of rest are from Saturday to Sunday, we can deduce that days of
-                rest can have a positive influence on the number of reported UFOs. Thus, this may explain that Saturday is generally the day with the
-                highest reporting rate of UFOs (18%) and the closer we get to the weekend, the higher the rate becomes.
-            </p>
-        </div>
-    </div>
+    <br><br>
     <!-- Map -->
+    <div id="map-exploration-start"></div>
     <div class="row">
         <div class="col-md-10">
             <div id="map-container"></div>
@@ -260,6 +300,28 @@
             </div>
         </div>
         <div class="col-md-2"></div>
+    </div>
+    <div id="conclusions-start"></div>
+    <br><br>
+    <div class="row">
+        <div class="col-md-6">
+            <h2 class="centered">Map analysis and findings</h2>
+            Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+            Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+        </div>
+        <div class="col-md-6">
+            <div id="conclusions">
+                <h2 class="centered">Conclusions</h2>
+                Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+                Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+            </div>
+            <div id="project-by">
+                <h2 class="centered">A project by</h2>
+                <p class="centered">Alex Lonchambon</p>
+                <p class="centered">Marek Hlava</p>
+                <p class="centered">Martin Metaksov (pqh518)</p>
+            </div>
+        </div>
     </div>
 </div>
 
