@@ -238,7 +238,7 @@ function initMap() {
 
     zoomToUsa = function() {
 
-        // Can't get mainland USA bounds easily so partially zoom to Mexico and move up proportionally
+        // Can't get bounds of the contiguous US easily so partially zoom to Mexico and move up proportionally
         let bounds = path.bounds(mexico),
             dx = (bounds[1][0] - bounds[0][0]) * 1.9,
             dy = bounds[1][1] - bounds[0][1],
