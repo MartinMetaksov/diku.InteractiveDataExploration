@@ -128,8 +128,6 @@ function plotUfosByCountry(data) {
     dataObj.sort((a, b) => b.count - a.count);
     dataObj.length = 10;
 
-    console.log(dataObj);
-
     let margin = {top: 20, right: 20, bottom: 60, left: 40},
         width = +svg.attr('width') - margin.left - margin.right,
         height = +svg.attr('height') - margin.top - margin.bottom;
