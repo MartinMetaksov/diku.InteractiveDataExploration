@@ -4,7 +4,7 @@ let ufoData,
     cfData,
     startDate = moment('12/10/2012'),
     endDate = moment('01/01/2014'),
-    stepLength = 1000,
+    stepLength = 1700,
     currentMoment,
     totalDuration = endDate.diff(startDate, 'days'),
     interval,
@@ -268,31 +268,31 @@ function initMap() {
 
         let oldPoints = g.selectAll('.gpoint');
 
-        g.selectAll('g')
-            .data(data)
-            .enter()
-            .append('g')
-            .attr('class', 'gpoint')
-            .append('svg:circle')
-            .attr('cx', d => projection([d.longitude, d.latitude])[0])
-            .attr('cy', d => projection([d.longitude, d.latitude])[1])
-            .attr('r', d => scaleDuration(d.duration_sec))
-            .style('fill', d => shapeColor(shapes.findIndex(s => d.shape === s.shape)))
-            .on('mouseover', d => handleMouseOver(d.dt.toLocaleString() + '<br />' + d.city
-                + (d.state ? ', ' : '') + d.state + (d.country ? ', ' : '') + d.country + '<br />Shape: ' + d.shape + '<br />' + d.comments))
-            .on('mouseout', handleMouseOut)
-            .style('opacity', 0.0)
+        oldPoints
             .transition()
             .duration(400)
-            .style('opacity', 1.0);
+            .style('opacity', 0.0)
+            .remove();
 
         setTimeout(function() {
-            oldPoints
-                .transition()
-                .duration(600)
+            g.selectAll('g')
+                .data(data)
+                .enter()
+                .append('g')
+                .attr('class', 'gpoint')
+                .append('svg:circle')
+                .attr('cx', d => projection([d.longitude, d.latitude])[0])
+                .attr('cy', d => projection([d.longitude, d.latitude])[1])
+                .attr('r', d => scaleDuration(d.duration_sec))
+                .style('fill', d => shapeColor(shapes.findIndex(s => d.shape === s.shape)))
+                .on('mouseover', d => handleMouseOver(d.dt.toLocaleString() + '<br />' + d.city
+                    + (d.state ? ', ' : '') + d.state + (d.country ? ', ' : '') + d.country + '<br />Shape: ' + d.shape + '<br />' + d.comments))
+                .on('mouseout', handleMouseOut)
                 .style('opacity', 0.0)
-                .remove();
-        }, 1000);
+                .transition()
+                .duration(400)
+                .style('opacity', 1.0);
+        }, 600);
     }
 
     /*
@@ -309,6 +309,8 @@ function initMap() {
 
     $('#dtpicker-start').data('DateTimePicker').defaultDate(startDate);
     $('#dtpicker-end').data('DateTimePicker').defaultDate(endDate);
+
+    getAndAddDayData(startDate);
 
     $('#dtpicker-end').on('dp.change', function(e) {
         endDate = e.date;
@@ -344,7 +346,7 @@ function initMap() {
         }
         if ($(this).attr('src').includes('play')) {
             totalDuration = endDate.diff(startDate, 'days');
-            currentMoment = currentMoment ? currentMoment : 0;
+            currentMoment = currentMoment ? currentMoment : 1;
             play();
         } else {
             pause();
@@ -378,6 +380,7 @@ function initMap() {
         setProgressBar(m);
         currentMoment = getMomentByPerc(m);
         totalDuration = endDate.diff(startDate, 'days');
+        getAndAddDayData(startDate.clone().add(currentMoment, 'days'));
         $('.progress-indicator').text(startDate.clone().add(currentMoment, 'days').format("DD/MM/YYYY"));
         if (playing) {
             play();
@@ -396,6 +399,7 @@ function initMap() {
         totalDuration = undefined;
         $('.progress-indicator').text(startDate.clone().format("DD/MM/YYYY"));
         setProgressBar(0.0);
+        getAndAddDayData(startDate)
     }
 
     // distance must be in %
@@ -406,10 +410,8 @@ function initMap() {
 
 
     function getAndDisplaySightings() {
-        let date = startDate.clone().add(currentMoment, 'days');
-        let cfDayData;
-        cfDayData = datetimeDimension.filterAll().filter(dt => moment(dt).isSame(date, 'day')).top(Infinity);
-        addPoints(cfDayData);
+        let date = startDate.clone().add(currentMoment+1, 'days');
+        getAndAddDayData(date);
     }
 
     function play() {
@@ -441,6 +443,11 @@ function initMap() {
             clearInterval(interval);
             interval = undefined;
         }
+    }
+
+    function getAndAddDayData(day) {
+        let cfDayData = datetimeDimension.filterAll().filter(dt => moment(dt).isSame(day, 'day')).top(Infinity);
+        addPoints(cfDayData);
     }
 
     playInterval = function(s, e) {
