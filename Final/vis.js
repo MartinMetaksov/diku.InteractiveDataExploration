@@ -443,4 +443,12 @@ function initMap() {
         }
     }
 
+    function setAndPlayCustomInteral(s, e) {
+        // e.g. s or e can be '03/04/2013'
+        $('#dtpicker-start').data("DateTimePicker").date(s);
+        $('#dtpicker-end').data("DateTimePicker").date(e);
+        $('#link-map').click();
+        play();
+    }
+
 }
