@@ -313,14 +313,19 @@ function initMap() {
     getAndAddDayData(startDate);
 
     $('#dtpicker-end').on('dp.change', function(e) {
+        if (!e.date) {
+            return;
+        }
         endDate = e.date;
         resetProgressBar();
     });
 
     $('#dtpicker-start').on('dp.change', function(e) {
+        if (!e.date) {
+            return;
+        }
         startDate = e.date;
         resetProgressBar();
-        $('#dtpicker-end').data("DateTimePicker").minDate(e.date.clone().add(1, 'days'));
     });
 
     function getPercByMoment() {
@@ -332,7 +337,7 @@ function initMap() {
     }
 
     function validateDates() {
-        return startDate && endDate;
+        return startDate && endDate && startDate <= endDate;
     }
 
     function getBarWidthInPerc(bar) {
@@ -410,7 +415,7 @@ function initMap() {
 
 
     function getAndDisplaySightings() {
-        let date = startDate.clone().add(currentMoment+1, 'days');
+        let date = startDate.clone().add(currentMoment, 'days');
         getAndAddDayData(date);
     }
 
@@ -420,18 +425,22 @@ function initMap() {
         let cWidth = getBarWidthInPerc(bar);
 
         interval = setInterval(function() {
-            cWidth = Number(getPercByMoment());
+            cWidth = totalDuration > 0 ? Number(getPercByMoment()) : 100;
             if (cWidth >= 100) {
                 cWidth = 100;
             }
-            getAndDisplaySightings();
-            $('.progress-indicator').text(startDate.clone().add(currentMoment, 'days').format("DD/MM/YYYY"));
+            setProgressBar(cWidth);
+            if (cWidth === 100 && totalDuration > 0) {
+                getAndDisplaySightings();
+            }
             if (cWidth === 100) {
                 $('.play-pause-icon').attr('src', 'img/play.svg');
                 clearInterval(interval);
                 interval = undefined;
+                return;
             }
-            setProgressBar(cWidth);
+            getAndDisplaySightings();
+            $('.progress-indicator').text(startDate.clone().add(currentMoment, 'days').format("DD/MM/YYYY"));
             currentMoment++;
         }, stepLength)
     }
@@ -451,9 +460,11 @@ function initMap() {
     }
 
     playInterval = function(s, e) {
-        // e.g. s or e can be '03/04/2013'
+        $('#dtpicker-start').data("DateTimePicker").date(null);
         $('#dtpicker-start').data("DateTimePicker").date(s);
         $('#dtpicker-end').data("DateTimePicker").date(e);
+        totalDuration = endDate.diff(startDate, 'days');
+        currentMoment = 1;
         $('#link-map').click();
         play();
     }
